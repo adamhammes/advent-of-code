@@ -1,0 +1,6 @@
+#!/bin/sh
+
+set -euxo pipefail
+
+python3.7 -m unittest "$1"
+
