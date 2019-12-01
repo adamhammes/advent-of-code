@@ -1,6 +1,10 @@
-#!/bin/sh
+#!/bin/bash
 
-set -euxo pipefail
+set -euo pipefail
 
-python3.7 -m unittest "$1"
+if [ -z "${1:-}" ]; then
+  python3.7 -m unittest discover -p "day*.py"
+else
+  python3.7 -m unittest "$1"
+fi
 

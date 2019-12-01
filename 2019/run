@@ -1,5 +1,14 @@
-#!/bin/sh
+#!/bin/bash
 
 set -euo pipefail
 
-python3.7 "$1"
+if [ -z "${1:-}" ]; then
+  for day in "day*.py"; do
+    echo $day
+    python3.7 $day | while read line
+      do printf "    %s\n" "$line"
+    done
+  done
+else
+  python3.7 "$1"
+fi
