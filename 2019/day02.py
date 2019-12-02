@@ -14,6 +14,7 @@ class Tape:
         opcode = self.values[self.cursor]
 
         if opcode == 99:
+            self.cursor += 1
             self.finished = True
         elif opcode == 1:
             self._add()
