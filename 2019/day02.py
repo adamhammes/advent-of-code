@@ -10,32 +10,36 @@ class Tape:
         if params is not None:
             self.values[1], self.values[2] = params
 
+        self.instructions = {
+            1: (self._add, 3),
+            2: (self._multiply, 3),
+            99: (self._halt, 0),
+        }
+
+    def _exec(self, method, instruction_count):
+        self.cursor += 1
+        args = self.values[self.cursor : self.cursor + instruction_count]
+        method(*args)
+        self.cursor += instruction_count
+
     def step(self):
         opcode = self.values[self.cursor]
-
-        if opcode == 99:
-            self.cursor += 1
-            self.finished = True
-        elif opcode == 1:
-            self._add()
-        elif opcode == 2:
-            self._multiply()
-
-    def _add(self):
-        pos1, pos2, outputPos = self.values[self.cursor + 1 : self.cursor + 4]
-        self.values[outputPos] = self.values[pos1] + self.values[pos2]
-        self.cursor += 4
-
-    def _multiply(self):
-        pos1, pos2, outputPos = self.values[self.cursor + 1 : self.cursor + 4]
-        self.values[outputPos] = self.values[pos1] * self.values[pos2]
-        self.cursor += 4
+        self._exec(*self.instructions[opcode])
 
     def run(self):
         while not self.finished:
             self.step()
 
         return self.values
+
+    def _add(self, pos1, pos2, outputPos):
+        self.values[outputPos] = self.values[pos1] + self.values[pos2]
+
+    def _multiply(self, pos1, pos2, outputPos):
+        self.values[outputPos] = self.values[pos1] * self.values[pos2]
+
+    def _halt(self):
+        self.finished = True
 
 
 def get_input():
