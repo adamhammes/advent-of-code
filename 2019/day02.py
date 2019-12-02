@@ -46,7 +46,6 @@ def get_input():
 def brute_force_2():
     for i in range(100):
         for j in range(100):
-            _input = get_input()
             output = Tape(get_input(), params=(i, j)).run()[0]
             if output == 19690720:
                 return 100 * i + j
