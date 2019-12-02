@@ -70,6 +70,10 @@ class TestDay1(unittest.TestCase):
             result = Tape(_input).run()
             self.assertEqual(expected, result)
 
+    def test_regressions(self):
+        self.assertEqual(3058646, Tape(get_input(), params=(12, 2)).run()[0])
+        self.assertEqual(8976, brute_force_2())
+
 
 if __name__ == "__main__":
     print(Tape(get_input(), params=(12, 2)).run()[0])
