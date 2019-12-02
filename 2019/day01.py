@@ -3,7 +3,7 @@ import unittest
 
 
 def get_input():
-    with open("inputs/day1.txt") as f:
+    with open("inputs/day01.txt") as f:
         return map(int, f.readlines())
 
 
