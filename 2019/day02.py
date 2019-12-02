@@ -2,14 +2,13 @@ import unittest
 
 
 class Tape:
-    def __init__(self, values, preprocess=False):
+    def __init__(self, values, params=None):
         self.values = values
         self.cursor = 0
         self.finished = False
 
-        if preprocess:
-            self.values[1] = 12
-            self.values[2] = 2
+        if params is not None:
+            self.values[1], self.values[2] = params
 
     def step(self):
         opcode = self.values[self.cursor]
@@ -43,6 +42,17 @@ def get_input():
         return list(map(int, f.read().split(",")))
 
 
+def brute_force_2():
+    for i in range(100):
+        for j in range(100):
+            _input = get_input()
+            output = Tape(get_input(), params=(i, j)).run()[0]
+            if output == 19690720:
+                return 100 * i + j
+
+    return None
+
+
 class TestDay1(unittest.TestCase):
     def test1(self):
         test_cases = [
@@ -62,4 +72,5 @@ class TestDay1(unittest.TestCase):
 
 
 if __name__ == "__main__":
-    print(Tape(get_input(), preprocess=True).run()[0])
+    print(Tape(get_input(), params=(12, 2)).run()[0])
+    print(brute_force_2())
