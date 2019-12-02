@@ -35,7 +35,7 @@ class Tape:
         while not self.finished:
             self.step()
 
-        return self.values[0]
+        return self.values
 
 
 def get_input():
@@ -47,7 +47,7 @@ def brute_force_2():
     for i in range(100):
         for j in range(100):
             _input = get_input()
-            output = Tape(get_input(), params=(i, j)).run()
+            output = Tape(get_input(), params=(i, j)).run()[0]
             if output == 19690720:
                 return 100 * i + j
 
@@ -73,5 +73,5 @@ class TestDay1(unittest.TestCase):
 
 
 if __name__ == "__main__":
-    print(Tape(get_input(), params=(12, 2)).run())
+    print(Tape(get_input(), params=(12, 2)).run()[0])
     print(brute_force_2())
