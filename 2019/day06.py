@@ -37,30 +37,14 @@ TEST_INPUT_2 = parse_input(
 
 class Graph:
     def __init__(self, edges, directed=True):
-        self._directed = directed
-        self._edges = edges
-        self._nodes = list(set(node for edge in edges for node in edge))
-        self._index = {node: i for i, node in enumerate(self._nodes)}
+        self._edges = collections.defaultdict(set)
 
-        num_nodes = len(self._nodes)
-        self._matrix = [[False for i in range(num_nodes)] for j in range(num_nodes)]
-
-        [self.add_edge(edge) for edge in edges]
-
-    def nodes(self):
-        return self._nodes
-
-    def add_edge(self, edge):
-        _from, to = edge
-        self._matrix[self._index[_from]][self._index[to]] = True
-
-        if not self._directed:
-            self._matrix[self._index[to]][self._index[_from]] = True
+        [self._edges[x].add(y) for x, y in edges]
+        if not directed:
+            [self._edges[y].add(x) for x, y in edges]
 
     def neighbors(self, node):
-        for index, is_connected in enumerate(self._matrix[self._index[node]]):
-            if is_connected:
-                yield self._nodes[index]
+        return self._edges[node]
 
     def distances_from(self, start_node="COM"):
         distances = {start_node: 0}
@@ -70,7 +54,7 @@ class Graph:
             node = queue.popleft()
             distance = distances[node]
 
-            unseen_neighbors = set(self.neighbors(node)) - distances.keys()
+            unseen_neighbors = self.neighbors(node) - distances.keys()
             for neighbor in unseen_neighbors:
                 distances[neighbor] = distance + 1
                 queue.append(neighbor)
@@ -89,15 +73,11 @@ class TestDay06(unittest.TestCase):
 
 
 def part1(_input):
-    g = Graph(_input)
-    distances = g.distances_from()
-
-    return sum(distances.values())
+    return sum(Graph(_input).distances_from().values())
 
 
 def part2(_input):
-    g = Graph(_input, directed=False)
-    return g.distances_from(start_node="YOU")["SAN"] - 2
+    return Graph(_input, directed=False).distances_from(start_node="YOU")["SAN"] - 2
 
 
 if __name__ == "__main__":
