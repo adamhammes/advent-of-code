@@ -4,7 +4,7 @@ import unittest
 
 
 def parse_input(lines):
-    return [list(reversed(line.split(")"))) for line in lines]
+    return [line.split(")") for line in lines]
 
 
 def get_input():
@@ -95,6 +95,21 @@ class Graph:
             node for node in self.nodes() if not list(self.incoming_neighbors(node))
         ]
 
+    def distances_from(self, start_node="COM"):
+        distances = {start_node: 0}
+        queue = collections.deque([start_node])
+
+        while queue:
+            node = queue.popleft()
+            distance = distances[node]
+
+            unseen_neighbors = set(self.neighbors(node)) - distances.keys()
+            for neighbor in unseen_neighbors:
+                distances[neighbor] = distance + 1
+                queue.append(neighbor)
+
+        return distances
+
     def distance(self, x, y):
         distances = {x: 0}
         queue = collections.deque([x])
@@ -113,21 +128,11 @@ class Graph:
 
 
 class TestDay06(unittest.TestCase):
-    def test_graph_construction(self):
-        g = Graph(TEST_INPUT)
-        self.assertEqual(12, len(list(g.nodes())))
-        self.assertEqual(set(["C"]), set(g.neighbors("D")))
-        self.assertEqual(set(["I", "E"]), set(g.incoming_neighbors("D")))
-
-    def test_orbit_count(self):
+    def test_examples(self):
         self.assertEqual(42, part1(TEST_INPUT))
-
-    def test_directed(self):
-        g = Graph(TEST_INPUT, directed=False)
-        self.assertEqual(set(["C", "I", "E"]), set(g.neighbors("D")))
+        self.assertEqual(4, part2(TEST_INPUT_2))
 
     def test_part2(self):
-        self.assertEqual(4, part2(TEST_INPUT_2))
 
     def test_regressions(self):
         self.assertEqual(140608, part1(get_input()))
@@ -136,18 +141,14 @@ class TestDay06(unittest.TestCase):
 
 def part1(_input):
     g = Graph(_input)
-    orbit_count = collections.defaultdict(int)
+    distances = g.distances_from()
 
-    for node in reversed(g.topological_ordering()):
-        for neighbor in g.neighbors(node):
-            orbit_count[node] = orbit_count[node] + 1 + orbit_count[neighbor]
-
-    return sum(orbit_count.values())
+    return sum(distances.values())
 
 
 def part2(_input):
     g = Graph(_input, directed=False)
-    return g.distance("YOU", "SAN") - 2
+    return g.distances_from(start_node="YOU")["SAN"] - 2
 
 
 if __name__ == "__main__":
