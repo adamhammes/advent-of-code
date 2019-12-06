@@ -98,7 +98,7 @@ class Graph:
     def distance(self, x, y):
         distances = {x: 0}
         queue = collections.deque([x])
-        iterations = 0
+
         while True:
             node = queue.popleft()
             distance = distances[node]
