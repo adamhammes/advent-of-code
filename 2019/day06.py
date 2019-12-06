@@ -106,10 +106,10 @@ class Graph:
             if node == y:
                 return distances[node]
 
-            for neighbor in self.neighbors(node):
-                if neighbor not in distances:
-                    distances[neighbor] = distance + 1
-                    queue.append(neighbor)
+            unseen_neighbors = set(self.neighbors(node)) - distances.keys()
+            for neighbor in unseen_neighbors:
+                distances[neighbor] = distance + 1
+                queue.append(neighbor)
 
 
 class TestDay06(unittest.TestCase):
