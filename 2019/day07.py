@@ -138,13 +138,11 @@ def calculate_amplitude_2(settings):
 
 def part1():
     phase_settings = itertools.permutations(range(5))
-
     return max(map(calculate_amplitude, phase_settings))
 
 
 def part2():
     phase_settings = itertools.permutations(range(5, 10))
-
     return max(map(calculate_amplitude_2, phase_settings))
 
 
