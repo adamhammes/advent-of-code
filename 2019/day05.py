@@ -1,6 +1,3 @@
-import unittest
-
-
 class Tape:
     def __init__(self, values, params=None, input_value=1):
         self.values = values

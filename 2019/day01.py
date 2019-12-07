@@ -1,5 +1,4 @@
 import math
-import unittest
 
 
 def get_input():
@@ -22,29 +21,14 @@ def recursive_fuel_needed(mass):
     return total_fuel
 
 
-class TestDay1(unittest.TestCase):
-    def test1(self):
-        test_cases = [
-            (12, 2),
-            (14, 2),
-            (1969, 654),
-            (100756, 33583),
-        ]
+def part1():
+    return sum(map(fuel_needed, get_input()))
 
-        for mass, fuel in test_cases:
-            self.assertEqual(fuel_needed(mass), fuel)
 
-    def test2(self):
-        test_cases = [
-            (14, 2),
-            (1969, 966),
-            (100756, 50346),
-        ]
-
-        for mass, fuel in test_cases:
-            self.assertEqual(recursive_fuel_needed(mass), fuel)
+def part2():
+    return sum(map(recursive_fuel_needed, get_input()))
 
 
 if __name__ == "__main__":
-    print(sum(map(fuel_needed, get_input())))
-    print(sum(map(recursive_fuel_needed, get_input())))
+    print(part1())
+    print(part2())

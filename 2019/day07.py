@@ -1,6 +1,5 @@
 import collections
 import itertools
-import unittest
 
 
 class Tape:
@@ -150,12 +149,6 @@ def part2():
     phase_settings = list(itertools.permutations(range(5, 10)))
 
     return max(map(calculate_amplitude_2, phase_settings))
-
-
-class TestDay07(unittest.TestCase):
-    def test_regressions(self):
-        self.assertEqual(17790, part1())
-        self.assertEqual(19384820, part2())
 
 
 if __name__ == "__main__":
