@@ -124,11 +124,8 @@ def calculate_amplitude_2(settings):
 
     tapes[0].add_input(0)
 
-    while not tapes[-1].finished:
+    while all(not tape.finished for tape in tapes):
         for tape_index, tape in enumerate(tapes):
-            if tape.finished:
-                continue
-
             should_continue = tape.step()
             while should_continue and not tape.finished:
                 should_continue = tape.step()
