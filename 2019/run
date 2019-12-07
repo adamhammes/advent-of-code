@@ -1,14 +1,16 @@
-#!/bin/bash
+#!/usr/local/bin/python3
+import glob
+import subprocess
+import sys
 
-set -euo pipefail
-
-if [ -z "${1:-}" ]; then
-  for day in "day*.py"; do
-    echo $day
-    python3.7 $day | while read line
-      do printf "    %s\n" "$line"
-    done
-  done
-else
-  python3.7 "$1"
-fi
+if __name__ == "__main__":
+    if len(sys.argv) > 1:
+        subprocess.run(["python3.7", sys.argv[1]])
+    else:
+        for file in sorted(glob.glob("day*.py")):
+            day = int(file[3 : 5])
+            result = subprocess.run(["python3.7", file], stdout=subprocess.PIPE)
+            output = result.stdout.decode("UTF-8")
+            output = "\n".join("\t" + line for line in output.splitlines())
+            print(f"Day {day}")
+            print(output)
