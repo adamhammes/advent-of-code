@@ -1,13 +1,10 @@
-import math
-
-
 def get_input():
     with open("inputs/day01.txt") as f:
         return map(int, f.readlines())
 
 
 def fuel_needed(mass):
-    return math.floor(mass / 3) - 2
+    return mass // 3 - 2
 
 
 def recursive_fuel_needed(mass):
