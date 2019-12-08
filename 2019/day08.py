@@ -24,8 +24,8 @@ def print_layer(layer):
 
 
 def part1():
-    max_zeroes = min(get_input(), key=lambda c: c.count(0))
-    return max_zeroes.count(1) * max_zeroes.count(2)
+    min_zeroes = min(get_input(), key=lambda c: c.count(0))
+    return min_zeroes.count(1) * min_zeroes.count(2)
 
 
 def part2():
