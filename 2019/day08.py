@@ -29,10 +29,9 @@ def part1():
 
 
 def part2():
-    layers = list(reversed(list(get_input())))
-    base = list(layers[0])
+    base = [2] * LAYER_WIDTH * LAYER_HEIGHT
 
-    for layer in layers[1:]:
+    for layer in reversed(list(get_input())):
         for i, digit in enumerate(layer):
             if digit != 2:
                 base[i] = digit
