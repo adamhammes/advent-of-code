@@ -14,7 +14,7 @@ def chunks(iterable, n, fillvalue=None):
 def get_input():
     with open("inputs/day08.txt") as f:
         chars = f.read().strip()
-        return chunks(list(map(int, chars)), LAYER_WIDTH * LAYER_HEIGHT)
+        return chunks(map(int, chars), LAYER_WIDTH * LAYER_HEIGHT)
 
 
 def print_layer(layer):
