@@ -11,6 +11,10 @@ def chunks(iterable, n, fillvalue=None):
     return itertools.zip_longest(*args, fillvalue=fillvalue)
 
 
+def first(iterable, condition):
+    return next(item for item in iterable if condition(item))
+
+
 def get_input():
     with open("inputs/day08.txt") as f:
         chars = f.read().strip()
@@ -29,14 +33,8 @@ def part1():
 
 
 def part2():
-    base = [2] * LAYER_WIDTH * LAYER_HEIGHT
-
-    for layer in reversed(list(get_input())):
-        for i, digit in enumerate(layer):
-            if digit != 2:
-                base[i] = digit
-
-    return base
+    rendered_pixel = lambda pixel_stack: first(pixel_stack, lambda p: p != 2)
+    return map(rendered_pixel, zip(*get_input()))
 
 
 if __name__ == "__main__":
