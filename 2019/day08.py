@@ -18,10 +18,9 @@ def get_input():
 
 
 def print_layer(layer):
-    for i, digit in enumerate(layer):
-        print(" " if digit == 0 else "█", end="")
-        if i % LAYER_WIDTH == LAYER_WIDTH - 1:
-            print()
+    printable_digit = lambda d: "█" if d else " "
+    for chunk in chunks(layer, LAYER_WIDTH):
+        print("".join(map(printable_digit, chunk)))
 
 
 def part1():
