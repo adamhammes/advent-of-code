@@ -1,6 +1,7 @@
 import itertools
 
-PHOTO_SIZE = 25 * 6
+LAYER_WIDTH = 25
+LAYER_HEIGHT = 6
 
 
 def chunks(iterable, n, fillvalue=None):
@@ -13,7 +14,14 @@ def chunks(iterable, n, fillvalue=None):
 def get_input():
     with open("inputs/day08.txt") as f:
         chars = f.read().strip()
-        return chunks(list(map(int, chars)), PHOTO_SIZE)
+        return chunks(list(map(int, chars)), LAYER_WIDTH * LAYER_HEIGHT)
+
+
+def print_layer(layer):
+    for i, digit in enumerate(layer):
+        print(" " if digit == 0 else "█", end="")
+        if i % LAYER_WIDTH == LAYER_WIDTH - 1:
+            print()
 
 
 def part1():
@@ -30,18 +38,9 @@ def part2():
             if digit != 2:
                 base[i] = digit
 
-    printable = []
-    digits = iter(base)
-    for i in range(6):
-        printable.append([])
-        for j in range(25):
-            digit = next(digits)
-            printable[-1].append("█" if digit == 0 else "░")
-
-    for row in printable:
-        print("".join(map(str, row)))
+    return base
 
 
 if __name__ == "__main__":
     print(part1())
-    part2()
+    print_layer(part2())
