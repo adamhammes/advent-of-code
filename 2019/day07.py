@@ -8,8 +8,8 @@ class Tape:
         self.cursor = 0
         self.finished = False
         self.output = []
-        self.input_values = collections.deque(input_values)
-        self.extra_value = collections.defaultdict(int)
+        self.input_values = collections.deque(input_values or [])
+        self.extra_values = collections.defaultdict(int)
 
         if params is not None:
             self.values[1], self.values[2] = params
