@@ -46,7 +46,7 @@ class Tape:
         method, instruction_count = self.instructions[instruction]
         self.cursor += 1
 
-        if instruction in [3, 4, 99]:
+        if instruction in [3, 99]:
             args = self.values[self.cursor : self.cursor + instruction_count]
         else:
             args = self._get_values(full_opcode, instruction_count)
@@ -79,8 +79,8 @@ class Tape:
         _in = self.input_values.popleft()
         self.values[address] = _in
 
-    def _output(self, address):
-        self.output.append(self.values[address])
+    def _output(self, value):
+        self.output.append(value)
 
     def _jump_if_true(self, test, address):
         if test:
