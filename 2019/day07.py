@@ -43,15 +43,17 @@ class Tape:
 
     def _get_values(self, full_opcode, instruction_count):
         parameter_string = str(full_opcode // 100).rjust(instruction_count, "0")
-        uses_immediate = list(reversed(list(map(lambda x: x == "1", parameter_string))))
+        parameter_modes = list(reversed(list(map(int, parameter_string))))
 
         if full_opcode % 100 in [1, 2, 7, 8]:
-            uses_immediate[-1] = True
+            parameter_modes[-1] = True
 
-        for i, immediate_mode in enumerate(uses_immediate):
+        for i, parameter_mode in enumerate(parameter_modes):
             op_value = self.values[self.cursor + i]
-            value_to_use = op_value if immediate_mode else self.values[op_value]
-            yield value_to_use
+            if parameter_mode == 0:
+                yield self.values[op_value]
+            elif parameter_mode == 1:
+                yield op_value
 
     def _exec(self):
         full_opcode = self.values[self.cursor]
