@@ -9,6 +9,7 @@ class Tape:
         self.finished = False
         self.output = []
         self.input_values = collections.deque(input_values)
+        self.extra_value = collections.defaultdict(int)
 
         if params is not None:
             self.values[1], self.values[2] = params
@@ -24,6 +25,18 @@ class Tape:
             8: (self._equal, 3),
             99: (self._halt, 0),
         }
+
+    def _read(self, address):
+        if address >= len(self.values):
+            return self.extra_values[address]
+
+        return self.values[address]
+
+    def _write(self, address, value):
+        if address >= len(self.values):
+            self.extra_values[address] = value
+        else:
+            self.values[address] = value
 
     def add_input(self, _in):
         self.input_values.append(_in)
@@ -67,17 +80,17 @@ class Tape:
         return self.values
 
     def _add(self, x, y, outputPos):
-        self.values[outputPos] = x + y
+        self._write(outputPos, x + y)
 
     def _multiply(self, x, y, outputPos):
-        self.values[outputPos] = x * y
+        self._write(outputPos, x * y)
 
     def _halt(self):
         self.finished = True
 
     def _input(self, address):
         _in = self.input_values.popleft()
-        self.values[address] = _in
+        self._write(address, _in)
 
     def _output(self, value):
         self.output.append(value)
@@ -93,10 +106,10 @@ class Tape:
             return True
 
     def _less_than(self, x, y, address):
-        self.values[address] = 1 if x < y else 0
+        self._write(address, 1 if x < y else 0)
 
     def _equal(self, x, y, address):
-        self.values[address] = 1 if x == y else 0
+        self.values(address, 1 if x == y else 0)
 
 
 def get_input():
