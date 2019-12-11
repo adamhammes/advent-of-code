@@ -19,7 +19,7 @@ def get_input():
 
 
 class Point(collections.namedtuple("Point", ["x", "y"])):
-    def slope(self, p_other):
+    def reduced_rise_run(self, p_other):
         dx, dy = p_other.x - self.x, p_other.y - self.y
         return safely_reduce(dx, dy)
 
@@ -36,14 +36,14 @@ def parse_input(coordinate_grid):
 
 
 def part1(points):
-    visible_points = collections.defaultdict(set)
+    vector_map = collections.defaultdict(set)
 
     for point in points:
         for other_point in points:
             if point != other_point:
-                visible_points[point].add(point.slope(other_point))
+                vector_map[point].add(point.reduced_rise_run(other_point))
 
-    return max(len(point_set) for point_set in visible_points.values())
+    return max(len(point_set) for point_set in vector_map.values())
 
 
 if __name__ == "__main__":
