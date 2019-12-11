@@ -1,40 +1,6 @@
 import collections
 from fractions import Fraction
 import math
-import unittest
-
-MY_EXAMPLE = """
-..#..
-..#..
-#####
-..#..
-..#..
-"""
-
-MY_EXAMPLE_2 = """
-######
-"""
-
-EXAMPLE_1 = """
-.#..#
-.....
-#####
-....#
-...##
-""".strip()
-
-EXAMPLE_2 = """
-......#.#.
-#..#.#....
-..#######.
-.#.#.###..
-.#..#.....
-..#....#.#
-#..#....#.
-.##.#..###
-##...#..#.
-.#....####
-"""
 
 
 def safely_reduce(dx, dy):
@@ -78,17 +44,6 @@ def part1(points):
                 visible_points[point].add(point.slope(other_point))
 
     return max(len(point_set) for point_set in visible_points.values())
-
-
-class TestDay10(unittest.TestCase):
-    def test_examples(self):
-        self.assertEqual(6, part1(parse_input(MY_EXAMPLE)))
-        self.assertEqual(2, part1(parse_input(MY_EXAMPLE_2)))
-        self.assertEqual(8, part1(parse_input(EXAMPLE_1)))
-        self.assertEqual(33, part1(parse_input(EXAMPLE_2)))
-
-    def test_regressions(self):
-        self.assertEqual(269, part1(parse_input(get_input())))
 
 
 if __name__ == "__main__":
