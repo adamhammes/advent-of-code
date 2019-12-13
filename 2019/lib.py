@@ -1,4 +1,5 @@
 import itertools
+import math
 
 
 def chunks(iterable, n, fillvalue=None):
@@ -10,3 +11,11 @@ def chunks(iterable, n, fillvalue=None):
 
 def first(iterable, condition):
     return next(item for item in iterable if condition(item))
+
+
+def lcm(*args):
+
+    lcm = args[0]
+    for i in args[1:]:
+        lcm = lcm * i // math.gcd(lcm, i)
+    return lcm

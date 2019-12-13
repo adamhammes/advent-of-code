@@ -1,6 +1,8 @@
 import collections
 import re
 
+from lib import lcm
+
 COORDS = ["x", "y", "z"]
 
 CHALLENGE_INPUT = """
@@ -58,14 +60,6 @@ class Simulation:
     def total_energy(self):
         return sum(map(Moon.energy, self.moons))
 
-    def zero_velocity(self):
-        for moon in self.moons:
-            for coord in COORDS:
-                if moon.velocity[coord] != 0:
-                    return False
-
-        return True
-
     def positions_in_dimension(self, dim):
         return tuple(moon.position[dim] for moon in self.moons)
 
@@ -94,15 +88,6 @@ def find_loop_in_dimension(dim, _in):
 
         i += 1
         sim.step()
-
-
-def lcm(*args):
-    from math import gcd
-
-    lcm = args[0]
-    for i in args[1:]:
-        lcm = lcm * i // gcd(lcm, i)
-    return lcm
 
 
 def part2(_in=CHALLENGE_INPUT):
