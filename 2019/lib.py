@@ -41,6 +41,7 @@ class Tape:
         self.output = []
         self.input_values = collections.deque(input_values or [])
         self.extra_values = collections.defaultdict(int)
+        self.relative_offset = 0
 
         if params is not None:
             self.values[1], self.values[2] = params
@@ -54,6 +55,7 @@ class Tape:
             6: (self._jump_if_false, [ParamType.Value, ParamType.Value]),
             7: (self._less_than, [ParamType.Value, ParamType.Value, ParamType.Address]),
             8: (self._equal, [ParamType.Value, ParamType.Value, ParamType.Address]),
+            9: (self._adjust_relative_offset, [ParamType.Value]),
             99: (self._halt, []),
         }
 
@@ -85,6 +87,8 @@ class Tape:
                 (0, ParamType.Value): self._read(op_value),
                 (1, ParamType.Address): op_value,  # technically shouldn't exist
                 (1, ParamType.Value): op_value,
+                (2, ParamType.Address): op_value + self.relative_offset,
+                (2, ParamType.Value): self._read(op_value + self.relative_offset),
             }[parameter_mode, param_type]
 
     def _exec(self):
@@ -94,7 +98,7 @@ class Tape:
         instruction_count = len(param_types)
         self.cursor += 1
 
-        if instruction in [3, 99]:
+        if instruction == 99:
             args = self.values[self.cursor : self.cursor + instruction_count]
         else:
             args = self._get_values(full_opcode, param_types)
@@ -144,4 +148,7 @@ class Tape:
         self._write(address, 1 if x < y else 0)
 
     def _equal(self, x, y, address):
-        self.values(address, 1 if x == y else 0)
+        self._write(address, 1 if x == y else 0)
+
+    def _adjust_relative_offset(self, value):
+        self.relative_offset += value
