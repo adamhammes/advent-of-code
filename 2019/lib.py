@@ -83,13 +83,15 @@ class Tape:
             op_value = self._read(self.cursor + i)
 
             yield {
-                (0, ParamType.Address): op_value,
-                (0, ParamType.Value): self._read(op_value),
-                (1, ParamType.Address): op_value,  # technically shouldn't exist
-                (1, ParamType.Value): op_value,
-                (2, ParamType.Address): op_value + self.relative_offset,
-                (2, ParamType.Value): self._read(op_value + self.relative_offset),
-            }[parameter_mode, param_type]
+                (0, ParamType.Address): lambda: op_value,
+                (0, ParamType.Value): lambda: self._read(op_value),
+                (1, ParamType.Address): lambda: op_value,  # technically shouldn't exist
+                (1, ParamType.Value): lambda: op_value,
+                (2, ParamType.Address): lambda: op_value + self.relative_offset,
+                (2, ParamType.Value): lambda: self._read(
+                    op_value + self.relative_offset
+                ),
+            }[parameter_mode, param_type]()
 
     def _exec(self):
         full_opcode = self.values[self.cursor]
