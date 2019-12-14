@@ -1,4 +1,5 @@
 import collections
+import enum
 import itertools
 import math
 
@@ -22,6 +23,11 @@ def lcm(*args):
     return lcm
 
 
+class ParamType(enum.Enum):
+    Address = enum.auto()
+    Value = enum.auto()
+
+
 class Tape:
     def __init__(self, values, params=None, input_values=None):
         self.values = values
@@ -35,15 +41,15 @@ class Tape:
             self.values[1], self.values[2] = params
 
         self.instructions = {
-            1: (self._add, 3),
-            2: (self._multiply, 3),
-            3: (self._input, 1),
-            4: (self._output, 1),
-            5: (self._jump_if_true, 2),
-            6: (self._jump_if_false, 2),
-            7: (self._less_than, 3),
-            8: (self._equal, 3),
-            99: (self._halt, 0),
+            1: (self._add, [ParamType.Value, ParamType.Value, ParamType.Value]),
+            2: (self._multiply, [ParamType.Value, ParamType.Value, ParamType.Value]),
+            3: (self._input, [ParamType.Address]),
+            4: (self._output, [ParamType.Value]),
+            5: (self._jump_if_true, [ParamType.Value, ParamType.Address]),
+            6: (self._jump_if_false, [ParamType.Value, ParamType.Address]),
+            7: (self._less_than, [ParamType.Value, ParamType.Value, ParamType.Value]),
+            8: (self._equal, [ParamType.Value, ParamType.Value, ParamType.Value]),
+            99: (self._halt, []),
         }
 
     def _read(self, address):
@@ -61,7 +67,8 @@ class Tape:
     def add_input(self, _in):
         self.input_values.append(_in)
 
-    def _get_values(self, full_opcode, instruction_count):
+    def _get_values(self, full_opcode, param_types):
+        instruction_count = len(param_types)
         parameter_string = str(full_opcode // 100).rjust(instruction_count, "0")
         parameter_modes = list(reversed(list(map(int, parameter_string))))
 
@@ -78,13 +85,14 @@ class Tape:
     def _exec(self):
         full_opcode = self.values[self.cursor]
         instruction = full_opcode % 100
-        method, instruction_count = self.instructions[instruction]
+        method, param_types = self.instructions[instruction]
+        instruction_count = len(param_types)
         self.cursor += 1
 
         if instruction in [3, 99]:
             args = self.values[self.cursor : self.cursor + instruction_count]
         else:
-            args = self._get_values(full_opcode, instruction_count)
+            args = self._get_values(full_opcode, param_types)
 
         result = method(*args)
         if result is None:
