@@ -28,6 +28,11 @@ class ParamType(enum.Enum):
     Value = enum.auto()
 
 
+def _read_param_modes(instruction, instruction_count):
+    parameter_string = str(instruction // 100).rjust(instruction_count, "0")
+    return reversed(list(map(int, parameter_string)))
+
+
 class Tape:
     def __init__(self, values, params=None, input_values=None):
         self.values = values
@@ -41,14 +46,14 @@ class Tape:
             self.values[1], self.values[2] = params
 
         self.instructions = {
-            1: (self._add, [ParamType.Value, ParamType.Value, ParamType.Value]),
-            2: (self._multiply, [ParamType.Value, ParamType.Value, ParamType.Value]),
+            1: (self._add, [ParamType.Value, ParamType.Value, ParamType.Address]),
+            2: (self._multiply, [ParamType.Value, ParamType.Value, ParamType.Address]),
             3: (self._input, [ParamType.Address]),
             4: (self._output, [ParamType.Value]),
-            5: (self._jump_if_true, [ParamType.Value, ParamType.Address]),
-            6: (self._jump_if_false, [ParamType.Value, ParamType.Address]),
-            7: (self._less_than, [ParamType.Value, ParamType.Value, ParamType.Value]),
-            8: (self._equal, [ParamType.Value, ParamType.Value, ParamType.Value]),
+            5: (self._jump_if_true, [ParamType.Value, ParamType.Value]),
+            6: (self._jump_if_false, [ParamType.Value, ParamType.Value]),
+            7: (self._less_than, [ParamType.Value, ParamType.Value, ParamType.Address]),
+            8: (self._equal, [ParamType.Value, ParamType.Value, ParamType.Address]),
             99: (self._halt, []),
         }
 
@@ -68,19 +73,19 @@ class Tape:
         self.input_values.append(_in)
 
     def _get_values(self, full_opcode, param_types):
-        instruction_count = len(param_types)
-        parameter_string = str(full_opcode // 100).rjust(instruction_count, "0")
-        parameter_modes = list(reversed(list(map(int, parameter_string))))
+        parameter_modes = _read_param_modes(full_opcode, len(param_types))
 
-        if full_opcode % 100 in [1, 2, 7, 8]:
-            parameter_modes[-1] = True
+        for i, parameter_mode, param_type in zip(
+            itertools.count(), parameter_modes, param_types
+        ):
+            op_value = self._read(self.cursor + i)
 
-        for i, parameter_mode in enumerate(parameter_modes):
-            op_value = self.values[self.cursor + i]
-            if parameter_mode == 0:
-                yield self.values[op_value]
-            elif parameter_mode == 1:
-                yield op_value
+            yield {
+                (0, ParamType.Address): op_value,
+                (0, ParamType.Value): self._read(op_value),
+                (1, ParamType.Address): op_value,  # technically shouldn't exist
+                (1, ParamType.Value): op_value,
+            }[parameter_mode, param_type]
 
     def _exec(self):
         full_opcode = self.values[self.cursor]
