@@ -117,9 +117,12 @@ class Tape:
     def step(self):
         return self._exec()
 
-    def run(self):
+    def run(self, halt_on_output=False):
         while not self.finished:
-            self._exec()
+            was_output_instruction = not self._exec()
+
+            if halt_on_output and was_output_instruction:
+                break
 
         return self.values
 
