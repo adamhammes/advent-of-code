@@ -54,14 +54,13 @@ class Robot:
     def run(self):
         while True:
             current_color = self.world[self.position]
-            self.tape.set_input([current_color])
-            self.tape.run(halt_on_output=True)
-            self.tape.run(halt_on_output=True)
+            paint_color, direction = self.tape.run_until_output(
+                num_output_values=2, provide_input=[current_color]
+            )
 
             if self.tape.finished:
                 return
 
-            paint_color, direction = self.tape.output[-2:]
             self.world[self.position] = paint_color
             self.painted_points.add(self.position)
 
