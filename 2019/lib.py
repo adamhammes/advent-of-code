@@ -39,9 +39,9 @@ class Tape:
         self.cursor = 0
         self.finished = False
         self.output = []
-        self.input_values = collections.deque(input_values or [])
         self.extra_values = collections.defaultdict(int)
         self.relative_offset = 0
+        self.set_input(input_values)
 
         if params is not None:
             self.values[1], self.values[2] = params
@@ -58,6 +58,9 @@ class Tape:
             9: (self._adjust_relative_offset, [ParamType.Value]),
             99: (self._halt, []),
         }
+
+    def set_input(self, input_values):
+        self.input_values = collections.deque(input_values or [])
 
     def _read(self, address):
         if address >= len(self.values):
