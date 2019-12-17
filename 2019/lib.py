@@ -2,6 +2,7 @@ import collections
 import enum
 import itertools
 import math
+import typing as t
 
 
 def chunks(iterable, n, fillvalue=None):
@@ -15,7 +16,7 @@ def first(iterable, condition):
     return next(item for item in iterable if condition(item))
 
 
-def lcm(*args):
+def lcm(*args: int):
 
     lcm = args[0]
     for i in args[1:]:
@@ -34,7 +35,12 @@ def _read_param_modes(instruction, instruction_count):
 
 
 class Tape:
-    def __init__(self, values, params=None, input_values=None):
+    def __init__(
+        self,
+        values: t.List[int],
+        params: t.Optional[t.Tuple[int, int]],
+        input_values=None,
+    ):
         self.values = values
         self.cursor = 0
         self.finished = False
