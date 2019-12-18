@@ -114,7 +114,13 @@ class Tape:
         }
 
     def set_input(self, input_values):
-        self.input_values = collections.deque(input_values or [])
+        listified = input_values
+        if input_values is None:
+            listified = []
+        elif not isinstance(input_values, list):
+            listified = [input_values]
+
+        self.input_values = collections.deque(listified)
 
     def _read(self, address):
         if address >= len(self.values):
