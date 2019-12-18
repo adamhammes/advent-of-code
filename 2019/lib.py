@@ -38,7 +38,7 @@ class Tape:
     def __init__(
         self,
         values: t.List[int],
-        params: t.Optional[t.Tuple[int, int]],
+        params: t.Optional[t.Tuple[int, int]] = None,
         input_values=None,
     ):
         self.values = values
