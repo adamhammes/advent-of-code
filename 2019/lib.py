@@ -5,6 +5,42 @@ import math
 import typing as t
 
 
+class Point(collections.namedtuple("Point", ["x", "y"])):
+    def displace(self, x, y):
+        return Point(self.x + x, self.y + y)
+
+    def move_by_direction(self, direction):
+        self.displace(*direction.value)
+
+    def neighbors(self):
+        for direction in CardinalDirection:
+            yield self.displace(*direction.value)
+
+    def is_neighbors_with(self, other_point):
+        return other_point in list(self.neighbors())
+
+    def difference(self, other_point):
+        return Point(other_point.x - self.x, other_point.y - self.y)
+
+    def direction_to(self, other_point):
+        return CardinalDirection(self.difference(other_point))
+
+
+class CardinalDirection(enum.Enum):
+    Up = Point(0, 1)
+    Right = Point(1, 0)
+    Down = Point(0, -1)
+    Left = Point(-1, 0)
+
+    def inverse_direction(self):
+        return {
+            CardinalDirection.Up: CardinalDirection.Down,
+            CardinalDirection.Right: CardinalDirection.Left,
+            CardinalDirection.Down: CardinalDirection.Up,
+            CardinalDirection.Left: CardinalDirection.Right,
+        }[self]
+
+
 def chunks(iterable, n, fillvalue=None):
     "Collect data into fixed-length chunks or blocks"
     # grouper('ABCDEFG', 3, 'x') --> ABC DEF Gxx"
