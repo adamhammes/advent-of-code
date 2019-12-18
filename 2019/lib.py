@@ -71,6 +71,18 @@ def _read_param_modes(instruction, instruction_count):
 
 
 class Tape:
+    @staticmethod
+    def tape_from_challenge(challenge, f_after=None, **kwargs):
+        file_name = f"inputs/day{str(challenge).rjust(2, '0')}.txt"
+        with open(file_name) as f:
+            instructions = list(map(int, f.read().strip().split(",")))
+            tape = Tape(instructions, **kwargs)
+
+            if not f_after:
+                return tape
+
+            return f_after(tape)
+
     def __init__(
         self,
         values: t.List[int],
