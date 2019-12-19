@@ -187,10 +187,14 @@ class Tape:
         return self.values
 
     def run_until_output(self, num_output_values=1, provide_input=None):
+        previous_num_output_values = len(self.output)
         if provide_input is not None:
             self.set_input(provide_input)
 
         [self.run(halt_on_output=True) for _ in range(num_output_values)]
+
+        assert len(self.output) == num_output_values + previous_num_output_values
+
         return self.output[-num_output_values:]
 
     def _add(self, x, y, outputPos):
