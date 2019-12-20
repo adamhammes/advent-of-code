@@ -10,7 +10,7 @@ class Point(collections.namedtuple("Point", ["x", "y"])):
         return Point(self.x + x, self.y + y)
 
     def move_by_direction(self, direction):
-        self.displace(*direction.value)
+        return self.displace(*direction.value)
 
     def neighbors(self):
         for direction in CardinalDirection:
