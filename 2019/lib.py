@@ -6,23 +6,23 @@ import typing as t
 
 
 class Point(collections.namedtuple("Point", ["x", "y"])):
-    def displace(self, x, y):
+    def displace(self, x: float, y: float) -> "Point":
         return Point(self.x + x, self.y + y)
 
-    def move_by_direction(self, direction):
+    def move_by_direction(self, direction: "CardinalDirection") -> "Point":
         return self.displace(*direction.value)
 
-    def neighbors(self):
+    def neighbors(self) -> t.Iterable["Point"]:
         for direction in CardinalDirection:
             yield self.displace(*direction.value)
 
-    def is_neighbors_with(self, other_point):
+    def is_neighbors_with(self, other_point: "Point") -> bool:
         return other_point in list(self.neighbors())
 
-    def difference(self, other_point):
+    def difference(self, other_point: "Point") -> "Point":
         return Point(other_point.x - self.x, other_point.y - self.y)
 
-    def direction_to(self, other_point):
+    def direction_to(self, other_point: "Point") -> "CardinalDirection":
         return CardinalDirection(self.difference(other_point))
 
 
@@ -32,7 +32,7 @@ class CardinalDirection(enum.Enum):
     Down = Point(0, -1)
     Left = Point(-1, 0)
 
-    def inverse_direction(self):
+    def inverse_direction(self) -> "CardinalDirection":
         return {
             CardinalDirection.Up: CardinalDirection.Down,
             CardinalDirection.Right: CardinalDirection.Left,
