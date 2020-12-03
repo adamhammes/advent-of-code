@@ -1,16 +1,12 @@
-import functools
 import itertools
-import operator
 import typing
+
+import lib
 
 
 def get_input():
     with open('inputs/day01.txt') as f:
         return list(map(int, f.readlines()))
-
-
-def product(ints: typing.Iterable[int]) -> int:
-    return functools.reduce(operator.mul, ints, 1)
 
 
 def first(iterable, condition):
@@ -19,7 +15,7 @@ def first(iterable, condition):
 
 def find_entries(entries: typing.Iterable[int], num_dimensions: int, target: int) -> int:
     combinations = itertools.combinations(entries, num_dimensions)
-    return product(first(combinations, lambda combo: sum(combo) == target))
+    return lib.product(first(combinations, lambda combo: sum(combo) == target))
 
 
 if __name__ == "__main__":
