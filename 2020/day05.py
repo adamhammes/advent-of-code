@@ -2,7 +2,7 @@ import typing
 
 
 def get_input():
-    with open('inputs/day05.txt') as f:
+    with open("inputs/day05.txt") as f:
         return f.readlines()
 
 
@@ -20,15 +20,15 @@ def parse_boarding_pass(boarding_pass: str) -> Seat:
 
     for direction in boarding_pass[:8]:
         if direction == "F":
-            rows = rows[0: len(rows) // 2]
+            rows = rows[0 : len(rows) // 2]
         else:
-            rows = rows[len(rows) // 2:]
+            rows = rows[len(rows) // 2 :]
 
     for direction in boarding_pass[7:]:
         if direction == "L":
-            columns = columns[0: len(columns) // 2]
+            columns = columns[0 : len(columns) // 2]
         else:
-            columns = columns[len(columns) // 2:]
+            columns = columns[len(columns) // 2 :]
 
     return Seat(row=rows[0], column=columns[0])
 

@@ -5,7 +5,7 @@ import lib
 
 
 def get_input():
-    with open('inputs/day01.txt') as f:
+    with open("inputs/day01.txt") as f:
         return list(map(int, f.readlines()))
 
 
@@ -13,7 +13,9 @@ def first(iterable, condition):
     return next(item for item in iterable if condition(item))
 
 
-def find_entries(entries: typing.Iterable[int], num_dimensions: int, target: int) -> int:
+def find_entries(
+    entries: typing.Iterable[int], num_dimensions: int, target: int
+) -> int:
     combinations = itertools.combinations(entries, num_dimensions)
     return lib.product(first(combinations, lambda combo: sum(combo) == target))
 

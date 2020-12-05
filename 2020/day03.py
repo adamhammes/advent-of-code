@@ -23,7 +23,7 @@ class Point(t.NamedTuple):
 
 
 def get_input() -> t.Tuple[int, t.Dict[Point, bool]]:
-    with open('inputs/day03.txt') as f:
+    with open("inputs/day03.txt") as f:
         lines = f.read().strip().splitlines()
 
     points = {}

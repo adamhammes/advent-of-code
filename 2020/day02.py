@@ -17,7 +17,7 @@ def parse_line(line: str) -> PasswordLine:
 
 
 def get_input() -> t.List[PasswordLine]:
-    with open('inputs/day02.txt') as f:
+    with open("inputs/day02.txt") as f:
         raw_lines = f.readlines()
 
     return list(map(parse_line, raw_lines))
@@ -34,7 +34,9 @@ def part_1():
 
 
 def password_actually_matches(line: PasswordLine) -> bool:
-    return (line.password[line.low - 1], line.password[line.high - 1]).count(line.character) == 1
+    return (line.password[line.low - 1], line.password[line.high - 1]).count(
+        line.character
+    ) == 1
 
 
 def part_2():
