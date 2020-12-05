@@ -34,7 +34,7 @@ iyr:2010 hgt:158cm hcl:#b6652a ecl:blu byr:1944 eyr:2021 pid:093154719
 
 def test_validation():
     for raw in INVALID.split("\n\n"):
-        assert not parse_passport(raw).is_valid()
+        assert not is_valid(parse_passport(raw))
 
     for raw in VALID.split("\n\n"):
-        assert parse_passport(raw).is_valid()
+        assert is_valid(parse_passport(raw))
