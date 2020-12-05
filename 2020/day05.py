@@ -42,12 +42,9 @@ def part_2():
     seats = map(parse_boarding_pass, get_input())
     seat_ids = list(sorted(seat.seat_id() for seat in seats))
 
-    previous_seat_id = seat_ids[0]
-    for seat_id in seat_ids:
+    for previous_seat_id, seat_id in zip(seat_ids, seat_ids[1:]):
         if (seat_id - previous_seat_id) > 1:
             return seat_id - 1
-
-        previous_seat_id = seat_id
 
 
 if __name__ == "__main__":
