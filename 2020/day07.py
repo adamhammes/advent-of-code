@@ -30,9 +30,6 @@ def get_input(inversed: bool) -> ColorGraph:
 
 def parse_line(line: str) -> t.Tuple[Color, t.List[Rule]]:
     outer_color, rest = line.strip().split(" bags contain ")
-    if "no other bags" in rest:
-        return outer_color, []
-
     rule_pattern = re.compile(r"(\d+) (.*?) bag")
     return outer_color, [
         (color, int(raw_quantity)) for raw_quantity, color in rule_pattern.findall(rest)
