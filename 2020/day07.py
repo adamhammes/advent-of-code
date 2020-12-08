@@ -6,7 +6,7 @@ import typing as t
 Color = str
 Rule = t.Tuple[Color, int]
 Input = t.Iterable[t.Tuple[Color, t.List[Rule]]]
-ColorGraph = t.Dict[str, t.Dict[str, int]]
+ColorGraph = t.Dict[Color, t.Dict[Color, int]]
 
 
 def read_into_graph(challenge: Input, inversed: bool) -> ColorGraph:
