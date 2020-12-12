@@ -11,7 +11,7 @@ def product(ints: typing.Iterable[int]) -> int:
 T = typing.TypeVar("T")
 
 
-def window(seq: typing.Iterable[T], n=2) -> typing.Generator[typing.Tuple[T]]:
+def window(seq: typing.Iterable[T], n=2) -> typing.Iterable[typing.Tuple[T]]:
     """Returns a sliding window (of width n) over data from the iterable
     s -> (s0,s1,...s[n-1]), (s1,s2,...,sn), ...
     """
@@ -22,3 +22,22 @@ def window(seq: typing.Iterable[T], n=2) -> typing.Generator[typing.Tuple[T]]:
     for elem in it:
         result = result[1:] + (elem,)
         yield result
+
+
+class Point(typing.NamedTuple):
+    x: int
+    y: int
+
+    def displace(self, dx, dy):
+        return Point(self.x + dx, self.y + dy)
+
+    # fmt: off
+    directions8 = [
+        [-1,  1], [0,  1], [1,  1],
+        [-1,  0],          [1,  0],
+        [-1, -1], [0, -1], [1, -1],
+    ]
+
+    def neighbors8(self) -> typing.List["Point"]:
+
+        return [self.displace(x, y) for x, y in self.directions8]
