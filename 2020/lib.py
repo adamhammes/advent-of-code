@@ -39,5 +39,11 @@ class Point(typing.NamedTuple):
     ]
 
     def neighbors8(self) -> typing.List["Point"]:
-
         return [self.displace(x, y) for x, y in self.directions8]
+
+    def manhattan_distance_to(self, p: 'Point') -> int:
+        dx, dy = p.x - self.x, p.y - self.y
+        return abs(dx) + abs(dy)
+
+    def times(self, n: int) -> 'Point':
+        return Point(self.x * n, self.y * n)
