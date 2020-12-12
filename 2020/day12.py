@@ -82,16 +82,8 @@ class ShipState:
             displacement = Orientation.from_char(instruction).as_coords().times(steps)
             self.waypoint = self.waypoint.displace(*displacement)
         elif instruction in "LR":
-            degrees = 360 - steps if instruction == "L"  else steps
-
-            x, y = self.waypoint
-            if degrees == 90:
-                self.waypoint = Point(y, -x)
-            elif degrees == 180:
-                self.waypoint = Point(-x, -y)
-            elif degrees == 270:
-                self.waypoint = Point(-y, x)
-
+            degrees = -1 * steps if instruction == "R" else steps
+            self.waypoint = self.waypoint.rotate(degrees)
         elif instruction == "F":
             displacement = self.waypoint.times(steps)
             self.position = self.position.displace(*displacement)

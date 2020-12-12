@@ -1,5 +1,6 @@
 import functools
 import itertools
+import math
 import operator
 import typing
 
@@ -47,3 +48,16 @@ class Point(typing.NamedTuple):
 
     def times(self, n: int) -> 'Point':
         return Point(self.x * n, self.y * n)
+
+    def rotate(self, degrees: int) -> 'Point':
+        """
+        Rotate the point counter-clockwise around the origin the specified number of degrees.
+        Resulting x/y coordinates will be rounded to the nearest integer.
+        """
+        rads = math.radians(degrees)
+        sin, cos = math.sin(rads), math.cos(rads)
+
+        x = self.x * cos - self.y * sin
+        y = self.x * sin + self.y * cos
+
+        return Point(int(round(x)), int(round(y)))
