@@ -28,14 +28,15 @@ class Orientation(enum.IntEnum):
             Orientation.South: ( 0, -1),
             Orientation.West:  (-1,  0),
         }[self])
+        # fmt: on
 
     @staticmethod
-    def from_char(c: str) -> 'Orientation':
+    def from_char(c: str) -> "Orientation":
         return {
-            'N': Orientation.North,
-            'E': Orientation.East,
-            'S': Orientation.South,
-            'W': Orientation.West,
+            "N": Orientation.North,
+            "E": Orientation.East,
+            "S": Orientation.South,
+            "W": Orientation.West,
         }[c]
 
 
@@ -58,7 +59,7 @@ class ShipState:
         else:
             self.orientation = Orientation((self.orientation - steps) % 4)
 
-    def move(self, line: str) -> 'ShipState':
+    def move(self, line: str) -> "ShipState":
         instruction, steps = line[0], int(line[1:])
 
         if instruction in "NESW":
@@ -75,7 +76,7 @@ class ShipState:
 
         return self
 
-    def move_waypoint(self, line: str) -> 'ShipState':
+    def move_waypoint(self, line: str) -> "ShipState":
         instruction, steps = line[0], int(line[1:])
 
         if instruction in "NESW":
