@@ -38,18 +38,19 @@ class Point(typing.NamedTuple):
         [-1,  0],          [1,  0],
         [-1, -1], [0, -1], [1, -1],
     ]
+    # fmt: on
 
     def neighbors8(self) -> typing.List["Point"]:
         return [self.displace(x, y) for x, y in self.directions8]
 
-    def manhattan_distance_to(self, p: 'Point') -> int:
+    def manhattan_distance_to(self, p: "Point") -> int:
         dx, dy = p.x - self.x, p.y - self.y
         return abs(dx) + abs(dy)
 
-    def times(self, n: int) -> 'Point':
+    def times(self, n: int) -> "Point":
         return Point(self.x * n, self.y * n)
 
-    def rotate(self, degrees: int) -> 'Point':
+    def rotate(self, degrees: int) -> "Point":
         """
         Rotate the point counter-clockwise around the origin the specified number of degrees.
         Resulting x/y coordinates will be rounded to the nearest integer.
