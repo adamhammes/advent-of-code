@@ -7,6 +7,11 @@ import typing
 T = typing.TypeVar("T")
 
 
+def get_input(day: int) -> str:
+    with open(f"inputs/day{day:02}.txt") as f:
+        return f.read()
+
+
 def first(iterable: typing.Iterable[T], condition: typing.Callable[[T], bool]) -> T:
     return next(item for item in iterable if condition(item))
 

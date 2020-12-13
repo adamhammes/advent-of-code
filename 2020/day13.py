@@ -10,11 +10,6 @@ SAMPLE = """
 """.strip()
 
 
-def get_input():
-    with open("inputs/day13.txt") as f:
-        return f.read()
-
-
 def parse_input(raw: str) -> typing.Tuple[int, typing.List[int]]:
     lines = raw.splitlines()
     first, second = lines[0], lines[1]
@@ -63,5 +58,5 @@ def part_2(raw: str):
 
 
 if __name__ == "__main__":
-    print(part_1(get_input()))
-    print(part_2(get_input()))
+    print(part_1(lib.get_input(13)))
+    print(part_2(lib.get_input(13)))

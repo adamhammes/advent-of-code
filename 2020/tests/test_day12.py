@@ -1,4 +1,5 @@
 from day12 import *
+import lib
 
 SAMPLE = """
 F10
@@ -38,8 +39,8 @@ def test_regression():
     assert part_1(SAMPLE) == 25
     assert part_2(SAMPLE) == 286
 
-    assert part_1(get_input()) == 2280
-    assert part_2(get_input()) == 38693
+    assert part_1(lib.get_input(12)) == 2280
+    assert part_2(lib.get_input(12)) == 38693
 
 
 def test_waypoint_rotation():

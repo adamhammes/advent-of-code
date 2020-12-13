@@ -1,12 +1,7 @@
 import dataclasses
 import enum
 
-from lib import Point
-
-
-def get_input():
-    with open("inputs/day12.txt") as f:
-        return f.read().strip()
+from lib import Point, get_input
 
 
 class TurnDirection(enum.Enum):
@@ -105,5 +100,5 @@ def part_2(raw: str):
 
 
 if __name__ == "__main__":
-    print(part_1(get_input()))
-    print(part_2(get_input()))
+    print(part_1(get_input(12)))
+    print(part_2(get_input(12)))

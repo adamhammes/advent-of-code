@@ -1,4 +1,5 @@
 from day13 import *
+import lib
 
 EASY = """
 1
@@ -17,7 +18,8 @@ SAMPLE_2 = """
 
 
 def test_regressions():
-    assert part_1(get_input()) == 1895
+    assert part_1(lib.get_input(13)) == 1895
+    assert part_2(lib.get_input(13)) == 840493039281088
 
 
 def test_part_1():
