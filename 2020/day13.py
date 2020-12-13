@@ -44,14 +44,12 @@ def parse_part_2(raw: str) -> typing.List[typing.Tuple[int, int]]:
 
 
 def find_min(m, prod, y, y_offset):
-    for num in itertools.count(m, prod):
-        if (num + y_offset) % y == 0:
-            return num
+    possibilities = itertools.count(m, prod)
+    return lib.first(possibilities, lambda num: (num + y_offset) % y == 0)
 
 
 def part_2(raw: str):
     constraints = parse_part_2(raw)
-    print(constraints)
 
     m = find_min(
         constraints[0][0], constraints[0][0], constraints[1][0], constraints[1][1]

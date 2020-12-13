@@ -4,12 +4,15 @@ import math
 import operator
 import typing
 
+T = typing.TypeVar("T")
+
+
+def first(iterable: typing.Iterable[T], condition: typing.Callable[[T], bool]) -> T:
+    return next(item for item in iterable if condition(item))
+
 
 def product(ints: typing.Iterable[int]) -> int:
     return functools.reduce(operator.mul, ints, 1)
-
-
-T = typing.TypeVar("T")
 
 
 def window(seq: typing.Iterable[T], n=2) -> typing.Iterable[typing.Tuple[T]]:
