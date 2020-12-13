@@ -4,11 +4,6 @@ import typing
 
 import lib
 
-SAMPLE = """
-939
-7,13,x,x,59,x,31,19
-""".strip()
-
 
 def parse_input(raw: str) -> typing.Tuple[int, typing.List[int]]:
     lines = raw.splitlines()
