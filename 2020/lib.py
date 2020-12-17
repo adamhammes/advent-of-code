@@ -70,3 +70,35 @@ class Point(typing.NamedTuple):
         y = self.x * sin + self.y * cos
 
         return Point(int(round(x)), int(round(y)))
+
+
+class PointNd:
+    def __init__(self, values: typing.Iterable[int]):
+        self.values = tuple(values)
+        self.num_dimensions = len(self.values)
+
+    def displace(self, delta_array) -> "PointNd":
+        if len(delta_array) != self.num_dimensions:
+            raise ValueError(
+                f"Tried to displace an {self.num_dimensions}d point by a {len(delta_array)}-length delta array"
+            )
+        return PointNd(val + delta for val, delta in zip(self.values, delta_array))
+
+    def __hash__(self):
+        return hash(self.values)
+
+    def __eq__(self, other):
+        if isinstance(other, PointNd):
+            return self.values == other.values
+
+        return False
+
+    def __repr__(self):
+        return f"PointNd{self.values}"
+
+    def neighbors(self) -> typing.Set["PointNd"]:
+        points = set()
+        for displacement in itertools.product([-1, 0, 1], repeat=self.num_dimensions):
+            points.add(self.displace(displacement))
+
+        return points - {self}
