@@ -28,7 +28,7 @@ def solve(grid):
 
         for point in points_to_consider:
             is_active = grid[point]
-            neighbors = [grid[n] for n in point.neighbors() if n in grid]
+            neighbors = [grid[n] for n in point.neighbors()]
 
             if is_active:
                 new_grid[point] = sum(neighbors) in [2, 3]
