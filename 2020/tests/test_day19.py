@@ -126,10 +126,7 @@ def test_replace_8():
 
 
 def test_replace_411():
-    assert (
-        replace_11("a", "b", depth=3)
-        == "(((a)(b))|((a)(a)(b)(b))|((a)(a)(a)(b)(b)(b)))"
-    )
+    assert replace_11("a", "b", depth=3) == "((ab)|(aabb)|(aaabbb))"
 
 
 def test_part_2():
