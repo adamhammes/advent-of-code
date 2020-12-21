@@ -2,6 +2,7 @@ import functools
 import itertools
 import math
 import operator
+import pprintpp
 import typing
 
 T = typing.TypeVar("T")
@@ -9,13 +10,21 @@ T = typing.TypeVar("T")
 cat = "".join
 
 
+def print(obj):
+    pp = pprintpp.PrettyPrinter(indent=2)
+    pp.pprint(obj)
+
+
 def get_input(day: int) -> str:
     with open(f"inputs/day{day:02}.txt") as f:
         return f.read()
 
 
-def first(iterable: typing.Iterable[T], condition: typing.Callable[[T], bool]) -> T:
-    return next(item for item in iterable if condition(item))
+def first(
+    iterable: typing.Iterable[T],
+    condition: typing.Optional[typing.Callable[[T], bool]] = None,
+) -> T:
+    return next(item for item in iterable if condition is None or condition(item))
 
 
 def product(ints: typing.Iterable[int]) -> int:
