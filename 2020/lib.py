@@ -1,3 +1,4 @@
+import enum
 import functools
 import itertools
 import math
@@ -113,3 +114,31 @@ class PointNd:
             points.add(self.displace(displacement))
 
         return points - {self}
+
+
+class HexDirection(enum.Enum):
+    # fmt: off
+    East =      ( 1, -1,  0)
+    NorthEast = ( 1,  0, -1)
+    NorthWest = ( 0,  1, -1)
+    West =      (-1,  1,  0)
+    SouthWest = (-1,  0,  1)
+    SouthEast = ( 0, -1,  1)
+    # fmt: on
+
+
+class HexPoint(typing.NamedTuple):
+    x: int
+    y: int
+    z: int
+
+    def move(self, direction: HexDirection):
+        dx, dy, dz = direction.value
+        return HexPoint(self.x + dx, self.y + dy, self.z + dz)
+
+    def neighbors6(self):
+        return set(map(self.move, HexDirection))
+
+    @staticmethod
+    def origin():
+        return HexPoint(0, 0, 0)
