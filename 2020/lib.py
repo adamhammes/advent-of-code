@@ -8,7 +8,9 @@ import typing
 
 T = typing.TypeVar("T")
 
-cat = "".join
+
+def cat(seq):
+    return "".join(str(s) for s in seq)
 
 
 def print(obj):

@@ -167,6 +167,7 @@ def test_edges():
 
 def test_flip():
     tile = parse_input(EXAMPLE_4x4)[-1]
+
     flipped = tile.flip()
     assert tile.tile_id == flipped.tile_id
     assert flipped.pixels == ((False, True), (True, True))
@@ -176,6 +177,8 @@ def test_flip():
 
 def test_rotate():
     tile = parse_input(EXAMPLE_4x4)[-1]
+    assert tile.pixels == ((True, True), (False, True))
+
     rotated = tile.rotate()
     assert tile.tile_id == rotated.tile_id
     assert rotated.pixels == ((False, True), (True, True))
