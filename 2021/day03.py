@@ -3,14 +3,8 @@ from typing import Callable
 
 
 def most_common_bit(lines: [str], col: int) -> str:
-    zeroes, ones = 0, 0
-
-    for line in lines:
-        if line[col] == "0":
-            zeroes += 1
-        else:
-            ones += 1
-
+    zeroes = sum(line[col] == "0" for line in lines)
+    ones = sum(line[col] == "1" for line in lines)
     return "0" if zeroes > ones else "1"
 
 
@@ -21,11 +15,9 @@ def least_common_bit(lines: [str], col: int) -> str:
 def part_1(raw: str) -> int:
     lines = raw.splitlines()
 
-    high_bits = []
-    low_bits = []
-    for col in range(len(lines[0])):
-        high_bits.append(most_common_bit(lines, col))
-        low_bits.append(least_common_bit(lines, col))
+    cols = list(range(len(lines[0])))
+    high_bits = [most_common_bit(lines, col) for col in cols]
+    low_bits = [least_common_bit(lines, col) for col in cols]
 
     high = int("".join(high_bits), 2)
     low = int("".join(low_bits), 2)
