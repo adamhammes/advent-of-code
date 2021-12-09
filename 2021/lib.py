@@ -2,12 +2,22 @@ import enum
 import itertools
 import typing
 
+from typing import Iterable
+
 T = typing.TypeVar("T")
 
 
 def get_input(day: int) -> str:
     with open(f"inputs/day{day:02}.txt") as f:
         return f.read()
+
+
+def product(nums: Iterable[int]) -> int:
+    p = 1
+    for n in nums:
+        p *= n
+
+    return p
 
 
 def window(seq: typing.Iterable[T], n=2) -> typing.Iterable[typing.Tuple[T]]:
@@ -29,6 +39,11 @@ class Point(typing.NamedTuple):
 
     def displace(self, dx, dy):
         return Point(self.x + dx, self.y + dy)
+
+    directions4 = [[0, 1], [-1, 0], [1, 0], [0, -1]]
+
+    def neighbors4(self) -> typing.List["Point"]:
+        return [self.displace(x, y) for x, y in self.directions4]
 
     # fmt: off
     directions8 = [
