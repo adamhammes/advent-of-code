@@ -30,7 +30,7 @@ def part_1(raw: str) -> int:
     return sum(point_map[p] + 1 for p in low_points)
 
 
-def flood_fill(point_map: Map, cur_point: Point) -> frozenset[Point]:
+def flood_fill(point_map: Map, cur_point: Point) -> set[Point]:
     queue = collections.deque([cur_point])
 
     flooded_points = {cur_point}
@@ -46,20 +46,20 @@ def flood_fill(point_map: Map, cur_point: Point) -> frozenset[Point]:
         flooded_points |= neighbors
         queue.extend(neighbors)
 
-    return frozenset(flooded_points)
+    return flooded_points
 
 
 def part_2(raw: str) -> int:
     point_map = parse_input(raw)
     possible_flood_points = {p for p in point_map if point_map[p] != 9}
-    flood_areas = set()
+    flood_areas = []
 
     while possible_flood_points:
         start_point = next(iter(possible_flood_points))
 
         flood_area = flood_fill(point_map, start_point)
         possible_flood_points.difference_update(flood_area)
-        flood_areas.add(flood_area)
+        flood_areas.append(flood_area)
 
     flood_area_sizes = [(len(area), area) for area in flood_areas]
     flood_area_sizes = list(sorted(flood_area_sizes))
