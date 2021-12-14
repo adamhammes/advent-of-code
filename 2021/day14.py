@@ -10,14 +10,9 @@ LetterCounts = collections.Counter[str]
 
 def parse_input(raw: str) -> Tuple[PairCounts, PairRules, LetterCounts]:
     start, raw_rules = raw.strip().split("\n\n")
-    lines = [line.strip().split(" -> ") for line in raw_rules.splitlines()]
-    rules = {_in: out for _in, out in lines}
-
-    start_pairs: dict[str, int] = collections.defaultdict(int)
-    for c1, c2 in zip(start, start[1:]):
-        start_pairs[c1 + c2] += 1
-
-    return start_pairs, rules, collections.Counter(start)
+    rules = dict(line.strip().split(" -> ") for line in raw_rules.splitlines())
+    pairs = (c1 + c2 for c1, c2 in zip(start, start[1:]))
+    return collections.Counter(pairs), rules, collections.Counter(start)
 
 
 def expand_polymer(
