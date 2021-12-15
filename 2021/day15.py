@@ -41,25 +41,26 @@ def expand_grid(original_grid: Cave) -> Cave:
 def find_path(cave: Cave) -> int:
     start = Point(0, 0)
     end = max(cave, key=product)
-    costs: dict[Point, int] = {}
+    found_lowest_cost = set()
 
     heap = [(0, start)]
 
     while heap:
         current_cost, current_position = heapq.heappop(heap)
+        if current_position in found_lowest_cost:
+            continue
 
         if current_position == end:
             return current_cost
 
+        found_lowest_cost.add(current_position)
+
         unexplored_neighbors = [
-            neighbor
-            for neighbor in current_position.neighbors4()
-            if neighbor in cave and neighbor not in costs
+            neighbor for neighbor in current_position.neighbors4() if neighbor in cave
         ]
 
         for neighbor in unexplored_neighbors:
-            costs[neighbor] = current_cost + cave[neighbor]
-            heapq.heappush(heap, (costs[neighbor], neighbor))
+            heapq.heappush(heap, (current_cost + cave[neighbor], neighbor))
 
 
 def part_1(raw: str) -> int:
