@@ -1,5 +1,5 @@
-import enum
 import itertools
+import math
 import typing
 
 from typing import Iterable
@@ -42,7 +42,7 @@ class Point(typing.NamedTuple):
 
     directions4 = [[0, 1], [-1, 0], [1, 0], [0, -1]]
 
-    def neighbors4(self) -> typing.List["Point"]:
+    def neighbors4(self) -> list["Point"]:
         return [self.displace(x, y) for x, y in self.directions4]
 
     # fmt: off
@@ -75,3 +75,12 @@ class Point(typing.NamedTuple):
         y = self.x * sin + self.y * cos
 
         return Point(int(round(x)), int(round(y)))
+
+
+def parse_grid(raw: str) -> dict[Point, str]:
+    points = {}
+    for y, line in enumerate(raw.strip().splitlines()):
+        for x, c in enumerate(line.strip()):
+            points[Point(x, y)] = c
+
+    return points
