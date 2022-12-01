@@ -6,10 +6,6 @@ from typing import Tuple
 import lib
 
 
-def bounds(r: range) -> Tuple[int, int]:
-    return min(r), max(r)
-
-
 def range_intersection(r1: range, r2: range) -> range:
     lower = max(min(r1), min(r2))
     upper = min(max(r1), max(r2))
