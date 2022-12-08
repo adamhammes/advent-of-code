@@ -1,4 +1,5 @@
 import itertools
+import math
 import typing
 
 
@@ -32,3 +33,34 @@ def window(seq: typing.Iterable[T], n=2) -> typing.Iterable[typing.Tuple[T]]:
     for elem in it:
         result = result[1:] + (elem,)
         yield result
+
+
+class Point(typing.NamedTuple):
+    x: int
+    y: int
+
+    def displace(self, dx, dy):
+        return Point(self.x + dx, self.y + dy)
+
+    directions4 = [[0, 1], [-1, 0], [1, 0], [0, -1]]
+
+    def neighbors4(self) -> list["Point"]:
+        return [self.displace(x, y) for x, y in self.directions4]
+
+    # fmt: off
+    directions8 = [
+        [-1,  1], [0,  1], [1,  1],
+        [-1,  0],          [1,  0],
+        [-1, -1], [0, -1], [1, -1],
+    ]
+    # fmt: on
+
+    def neighbors8(self) -> typing.List["Point"]:
+        return [self.displace(x, y) for x, y in self.directions8]
+
+    def manhattan_distance_to(self, p: "Point") -> int:
+        dx, dy = p.x - self.x, p.y - self.y
+        return abs(dx) + abs(dy)
+
+    def times(self, n: int) -> "Point":
+        return Point(self.x * n, self.y * n)
