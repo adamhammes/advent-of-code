@@ -11,6 +11,13 @@ def get_input(day: int) -> str:
         return f.read()
 
 
+def product(nums: typing.Iterable[int]) -> int:
+    p = 1
+    for n in nums:
+        p *= n
+    return p
+
+
 def chunks(iterable, n):
     it = iter(iterable)
     while True:
