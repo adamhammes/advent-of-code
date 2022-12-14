@@ -1,5 +1,6 @@
 import itertools
 import math
+import re
 import typing
 
 
@@ -71,3 +72,7 @@ class Point(typing.NamedTuple):
 
     def times(self, n: int) -> "Point":
         return Point(self.x * n, self.y * n)
+
+
+def extract_ints(string: str) -> list[int]:
+    return list(map(int, re.findall(r"\d+", string)))
