@@ -6,6 +6,8 @@ import typing
 
 T = typing.TypeVar("T")
 
+PRINTABLE_SQUARE = "█"
+
 
 def get_input(day: int) -> str:
     with open(f"inputs/day{day:02}.txt") as f:
