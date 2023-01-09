@@ -19,3 +19,7 @@ EXAMPLE = """
 
 def test_part_1():
     assert part_1(EXAMPLE) == 64
+
+
+def test_part_2():
+    assert part_2(EXAMPLE) == 58
