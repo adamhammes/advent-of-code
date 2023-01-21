@@ -17,7 +17,6 @@ def to_snafu(val: int) -> str:
                 digits[i - 1] += 1
 
     digits = [{-1: "-", -2: "="}.get(d, d) for d in digits]
-
     return "".join(map(str, digits)).lstrip("0")
 
 
