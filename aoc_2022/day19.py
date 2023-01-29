@@ -121,9 +121,9 @@ class ConstructionState(t.NamedTuple):
             blueprint.geode_robot,
         ]
 
-        max_ore_requirement = sum(robot.ore for robot in robots)
-        max_clay_requirement = sum(robot.clay for robot in robots)
-        max_obsidian_requirement = sum(robot.obsidian for robot in robots)
+        max_ore_requirement = max(robot.ore for robot in robots)
+        max_clay_requirement = max(robot.clay for robot in robots)
+        max_obsidian_requirement = max(robot.obsidian for robot in robots)
 
         children = [self.build_robot(blueprint.geode_robot)]
 
