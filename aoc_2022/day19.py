@@ -177,5 +177,5 @@ def part_2(raw: str) -> int:
 
 
 if __name__ == "__main__":
-    # print(part_1(lib.get_input(19)))
+    print(part_1(lib.get_input(19)))
     print(part_2(lib.get_input(19)))
