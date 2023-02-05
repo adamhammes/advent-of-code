@@ -17,30 +17,52 @@ Valve JJ has flow rate=21; tunnel leads to valve II
 def test_state_visit():
     distances, rates = parse_input(EXAMPLE)
 
-    visited_dd = State(distances, rates, 30).open("DD")
+    visited_dd = State(
+        distances, rates, num_agents=2, time=(30, 30), current_positions=("AA", "AA")
+    ).open("DD", 0)
+
     assert visited_dd == State(
-        distances, rates, time=28, current_position="DD", opened_at={"DD": 28}
+        distances,
+        rates,
+        num_agents=2,
+        time=(28, 30),
+        current_positions=("DD", "AA"),
+        opened_at={"DD": 28},
     )
 
-    visited_dd_bb = visited_dd.open("BB")
+    visited_dd_bb = visited_dd.open("BB", 0)
     assert visited_dd_bb == State(
         distances,
         rates,
-        time=25,
-        current_position="BB",
+        num_agents=2,
+        time=(25, 30),
+        current_positions=("BB", "AA"),
         opened_at={"DD": 28, "BB": 25},
+    )
+
+    visited_dd_bb_jj = visited_dd_bb.open("JJ", 1)
+    assert visited_dd_bb_jj == State(
+        distances,
+        rates,
+        num_agents=2,
+        time=(25, 27),
+        current_positions=("BB", "JJ"),
+        opened_at={"DD": 28, "BB": 25, "JJ": 27},
     )
 
 
 def test_possible_moves():
     distances, rates = parse_input(EXAMPLE)
 
-    state = State(distances, rates, time=30)
+    state = State(
+        distances, rates, num_agents=2, time=(30, 30), current_positions=("AA", "AA")
+    )
     moves = state.possible_moves()
 
-    assert len(moves) == 6
+    assert len(moves) == 12
 
-    assert set(m.current_position for m in moves) == {
+    assert set(m.current_positions[0] for m in moves) == {
+        "AA",
         "BB",
         "CC",
         "DD",
@@ -52,11 +74,25 @@ def test_possible_moves():
 
 def test_state_flow():
     distances, rates = parse_input(EXAMPLE)
-    state = State(distances, rates, time=30)
+    state = State(distances, rates, time=(30,), num_agents=1, current_positions=("AA",))
 
-    assert state.open("BB").flow() == 364
-    assert state.open("BB").open("CC").flow() == 364 + 52
+    assert state.open("BB", 0).flow() == 364
+    assert state.open("BB", 0).open("CC", 0).flow() == 364 + 52
+
+
+def test_fairy_tale_score():
+    distances, rates = parse_input(EXAMPLE)
+    state = State(
+        distances, rates, time=(30, 15), num_agents=2, current_positions=("AA", "AA")
+    )
+
+    s = state.fairy_tale_score()
+    assert s == (13 + 2 + 20 + 3 + 22 + 21) * 30
 
 
 def test_part_1():
     assert part_1(EXAMPLE) == 1651
+
+
+def test_part_2():
+    assert part_2(EXAMPLE) == 1707

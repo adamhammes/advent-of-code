@@ -1,7 +1,6 @@
 import collections
 import dataclasses
 import itertools
-import queue
 import re
 
 import lib
@@ -15,8 +14,9 @@ Distances = dict[tuple[str, str], int]
 class State:
     distances: Distances
     rates: FlowRates
-    time: int
-    current_position: str = "AA"
+    num_agents: int
+    time: tuple[int, ...]
+    current_positions: tuple[str, ...]
     opened_at: dict[str, int] = dataclasses.field(default_factory=dict)
 
     def flow(self) -> int:
@@ -24,26 +24,55 @@ class State:
             self.rates[valve] * opened_at for valve, opened_at in self.opened_at.items()
         )
 
-    def visited_valves(self) -> frozenset[str]:
-        return frozenset(self.opened_at)
+    def finger_print(self) -> tuple[frozenset[str], tuple[str, ...]]:
+        valves = frozenset(self.opened_at)
+        return valves, self.current_positions
+
+    def fairy_tale_score(self) -> int:
+        time_remaining = max(self.time)
+        return (
+            sum(
+                time_remaining * rate
+                for v, rate in self.rates.items()
+                if v not in self.opened_at
+            )
+            + self.flow()
+        )
 
     def __lt__(self, other):
         return self.flow() < other.flow()
 
-    def open(self, valve: str) -> "State":
-        arrival_time = self.time - self.distances[(self.current_position, valve)] - 1
+    def open(self, valve: str, agent_index: int) -> "State":
+        agent_current_position = self.current_positions[agent_index]
+        agent_current_time = self.time[agent_index]
+
+        arrival_time = (
+            agent_current_time - self.distances[(agent_current_position, valve)] - 1
+        )
+
+        new_positions = list(self.current_positions)
+        new_positions[agent_index] = valve
+
+        new_times = list(self.time)
+        new_times[agent_index] = arrival_time
+
         return State(
             distances=self.distances,
+            num_agents=self.num_agents,
             rates=self.rates,
-            time=arrival_time,
-            current_position=valve,
+            time=tuple(new_times),
+            current_positions=tuple(new_positions),
             opened_at=self.opened_at | {valve: arrival_time},
         )
 
     def possible_moves(self) -> list["State"]:
-        unvisited_valves = [v for v in self.rates if v not in self.opened_at]
-        states = list(map(self.open, unvisited_valves))
-        return [s for s in states if s.time > 0]
+        moves = []
+        for agent_index in range(self.num_agents):
+            unvisited_valves = [v for v in self.rates if v not in self.opened_at]
+            states = [self.open(valve, agent_index) for valve in unvisited_valves]
+            moves += states
+
+        return [state for state in moves if all(t > 0 for t in state.time)]
 
 
 def parse_input(raw: str) -> (Distances, FlowRates):
@@ -92,24 +121,32 @@ def precompute_distances(graph: Graph) -> Distances:
     }
 
 
-def part_1(raw: str) -> int:
-    distances, rates = parse_input(raw)
-
-    initial_state = State(distances, rates, time=30)
+def explore(distances: Distances, rates: FlowRates, time: int, num_agents: int) -> int:
+    initial_state = State(
+        distances,
+        rates,
+        num_agents=num_agents,
+        time=(time,) * num_agents,
+        current_positions=("AA",) * num_agents,
+    )
 
     states_to_explore = collections.deque([initial_state])
-    best_scores: dict[frozenset[str], int] = {}
+    best_scores: dict[tuple[frozenset[str], tuple[str, ...]], int] = {}
+    max_flow = 0
 
     while states_to_explore:
         current_state: State = states_to_explore.popleft()
 
-        visited = current_state.visited_valves()
-        if visited not in best_scores:
-            best_scores[visited] = current_state.flow()
-        elif best_scores[visited] >= current_state.flow():
+        fingerprint = current_state.finger_print()
+        if fingerprint not in best_scores:
+            best_scores[fingerprint] = current_state.flow()
+        elif best_scores[fingerprint] >= current_state.flow():
+            continue
+        elif current_state.fairy_tale_score() < max_flow:
             continue
 
-        best_scores[visited] = current_state.flow()
+        best_scores[fingerprint] = max(best_scores[fingerprint], current_state.flow())
+        max_flow = max(max_flow, current_state.flow())
 
         moves = current_state.possible_moves()
         states_to_explore += moves
@@ -117,5 +154,16 @@ def part_1(raw: str) -> int:
     return max(best_scores.values())
 
 
+def part_1(raw: str) -> int:
+    distances, rates = parse_input(raw)
+    return explore(distances, rates, time=30, num_agents=1)
+
+
+def part_2(raw: str) -> int:
+    distances, rates = parse_input(raw)
+    return explore(distances, rates, time=26, num_agents=2)
+
+
 if __name__ == "__main__":
     print(part_1(lib.get_input(16)))
+    print(part_2(lib.get_input(16)))
