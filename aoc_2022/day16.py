@@ -1,6 +1,7 @@
 import collections
+import dataclasses
 import itertools
-import math
+import queue
 import re
 
 import lib
@@ -9,21 +10,43 @@ Graph = dict[str, list[str]]
 FlowRates = dict[str, int]
 Distances = dict[tuple[str, str], int]
 
-EXAMPLE = """
-Valve AA has flow rate=0; tunnels lead to valves DD, II, BB
-Valve BB has flow rate=13; tunnels lead to valves CC, AA
-Valve CC has flow rate=2; tunnels lead to valves DD, BB
-Valve DD has flow rate=20; tunnels lead to valves CC, AA, EE
-Valve EE has flow rate=3; tunnels lead to valves FF, DD
-Valve FF has flow rate=0; tunnels lead to valves EE, GG
-Valve GG has flow rate=0; tunnels lead to valves FF, HH
-Valve HH has flow rate=22; tunnel leads to valve GG
-Valve II has flow rate=0; tunnels lead to valves AA, JJ
-Valve JJ has flow rate=21; tunnel leads to valve II
-"""
+
+@dataclasses.dataclass(frozen=True)
+class State:
+    distances: Distances
+    rates: FlowRates
+    time: int
+    current_position: str = "AA"
+    opened_at: dict[str, int] = dataclasses.field(default_factory=dict)
+
+    def flow(self) -> int:
+        return sum(
+            self.rates[valve] * opened_at for valve, opened_at in self.opened_at.items()
+        )
+
+    def visited_valves(self) -> frozenset[str]:
+        return frozenset(self.opened_at)
+
+    def __lt__(self, other):
+        return self.flow() < other.flow()
+
+    def open(self, valve: str) -> "State":
+        arrival_time = self.time - self.distances[(self.current_position, valve)] - 1
+        return State(
+            distances=self.distances,
+            rates=self.rates,
+            time=arrival_time,
+            current_position=valve,
+            opened_at=self.opened_at | {valve: arrival_time},
+        )
+
+    def possible_moves(self) -> list["State"]:
+        unvisited_valves = [v for v in self.rates if v not in self.opened_at]
+        states = list(map(self.open, unvisited_valves))
+        return [s for s in states if s.time > 0]
 
 
-def parse_input(raw: str) -> tuple[Graph, FlowRates]:
+def parse_input(raw: str) -> (Distances, FlowRates):
     graph: Graph = {}
     rates: FlowRates = {}
 
@@ -34,9 +57,13 @@ def parse_input(raw: str) -> tuple[Graph, FlowRates]:
         edges = re.split("valves? ", line)[1].split(", ")
 
         graph[label] = edges
-        rates[label] = rate
 
-    return graph, rates
+        if rate:
+            rates[label] = rate
+
+    distances = precompute_distances(graph)
+
+    return distances, rates
 
 
 def find_distance(graph: Graph, n1: str, n2: str) -> int:
@@ -65,43 +92,30 @@ def precompute_distances(graph: Graph) -> Distances:
     }
 
 
-def calc_flow(distances: Distances, rates: FlowRates, nodes: tuple[str, ...]) -> int:
-    time = flow = 0
-
-    cur_node = "AA"
-
-    for node in nodes:
-        time += distances[cur_node, node] + 1
-        if time > 30:
-            break
-
-        flow += (30 - time) * rates[node]
-        cur_node = node
-
-    return flow
-
-
 def part_1(raw: str) -> int:
-    graph, rates = parse_input(raw)
-    distances = precompute_distances(graph)
+    distances, rates = parse_input(raw)
 
-    flowing_nodes = [n for n, rate in rates.items() if rate and n != "AA"]
-    permutations = itertools.permutations(flowing_nodes, r=10)
+    initial_state = State(distances, rates, time=30)
 
-    # return len(flowing_nodes)
+    states_to_explore = collections.deque([initial_state])
+    best_scores: dict[frozenset[str], int] = {}
 
-    max_flow = 0
-    num_perms = math.factorial(len(flowing_nodes))
-    for i, perm in enumerate(permutations):
-        flow = calc_flow(distances, rates, perm)
-        max_flow = max(max_flow, flow)
+    while states_to_explore:
+        current_state: State = states_to_explore.popleft()
 
-        if i % 100_000 == 0:
-            print(f"{i}/{num_perms}")
+        visited = current_state.visited_valves()
+        if visited not in best_scores:
+            best_scores[visited] = current_state.flow()
+        elif best_scores[visited] >= current_state.flow():
+            continue
 
-    return max_flow
+        best_scores[visited] = current_state.flow()
+
+        moves = current_state.possible_moves()
+        states_to_explore += moves
+
+    return max(best_scores.values())
 
 
 if __name__ == "__main__":
-    # print(part_1(EXAMPLE))
     print(part_1(lib.get_input(16)))
