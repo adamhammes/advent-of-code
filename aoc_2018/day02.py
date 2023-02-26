@@ -18,16 +18,13 @@ def part_1(raw: str) -> int:
     return two_counts * three_counts
 
 
-def is_almost_pair(l1: str, l2: str) -> bool:
-    return sum(c1 != c2 for c1, c2 in zip(l1, l2)) == 1
-
-
 def part_2(raw: str) -> str:
     lines = raw.strip().splitlines()
 
     for l1, l2 in itertools.combinations(lines, 2):
-        if is_almost_pair(l1, l2):
-            return "".join(c1 for c1, c2 in zip(l1, l2) if c1 == c2)
+        overlap = "".join(c1 for c1, c2 in zip(l1, l2) if c1 == c2)
+        if len(overlap) == len(l1) - 1:
+            return overlap
 
 
 if __name__ == "__main__":
