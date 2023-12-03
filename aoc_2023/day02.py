@@ -60,12 +60,10 @@ def part_1(raw: str) -> int:
 
 
 def part_2(raw: str) -> int:
-    total = 0
-    for game_id, parts in enumerate(parse_input(raw), start=1):
-        final = functools.reduce(BagContents.maxify, parts)
-        total += final.power()
-
-    return total
+    return sum(
+        functools.reduce(BagContents.maxify, parts).power()
+        for parts in parse_input(raw)
+    )
 
 
 if __name__ == "__main__":
