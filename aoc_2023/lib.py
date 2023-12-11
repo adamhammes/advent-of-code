@@ -6,6 +6,13 @@ import typing
 T = typing.TypeVar("T")
 
 
+def first(
+    iterable: typing.Iterable[T],
+    condition: typing.Optional[typing.Callable[[T], bool]] = None,
+) -> T:
+    return next(item for item in iterable if condition is None or condition(item))
+
+
 def chunks(iterable, n):
     it = iter(iterable)
     while True:
@@ -46,10 +53,20 @@ class Point(typing.NamedTuple):
     def displace(self, dx, dy):
         return Point(self.x + dx, self.y + dy)
 
-    directions4 = [[0, 1], [-1, 0], [1, 0], [0, -1]]
+    def north(self) -> "Point":
+        return self.displace(0, 1)
+
+    def east(self) -> "Point":
+        return self.displace(1, 0)
+
+    def south(self):
+        return self.displace(0, -1)
+
+    def west(self):
+        return self.displace(-1, 0)
 
     def neighbors4(self) -> list["Point"]:
-        return [self.displace(x, y) for x, y in self.directions4]
+        return [self.north(), self.east(), self.south(), self.west()]
 
     # fmt: off
     directions8 = [
@@ -68,3 +85,15 @@ class Point(typing.NamedTuple):
 
     def times(self, n: int) -> "Point":
         return Point(self.x * n, self.y * n)
+
+
+Grid = dict[Point, str]
+
+
+def parse_grid(raw: str) -> Grid:
+    points = {}
+    for y, line in enumerate(raw.strip().splitlines()):
+        for x, c in enumerate(line.strip()):
+            points[Point(x, y)] = c
+
+    return points
