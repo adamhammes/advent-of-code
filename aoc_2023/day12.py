@@ -1,44 +1,66 @@
-import collections
-import re
+import functools
 import typing
 
 import lib
 
+Groups = tuple[int, ...]
+
 
 class Spring(typing.NamedTuple):
     record: str
-    groups: tuple[int, ...]
+    groups: Groups
 
-    def is_determinate(self) -> bool:
-        return "?" not in self.record
+    def expand(self, n: int) -> "Spring":
+        record = "?".join([self.record] * n)
+        return Spring(record, self.groups * n)
 
-    def replace_indeterminate(self, c: str) -> "Spring":
-        new_record = self.record.replace("?", c, 1)
-        return Spring(record=new_record, groups=self.groups)
 
-    def guesses(self) -> list["Spring"]:
-        guesses = []
+def is_viable(record: str, groups: Groups):
+    min_length = len(groups) - 1 + sum(groups)
+    return len(record) > min_length
 
-        queue = collections.deque([self])
-        while queue:
-            current = queue.popleft()
 
-            if current.is_determinate():
-                guesses.append(current)
-            else:
-                queue.append(current.replace_indeterminate("#"))
-                queue.append(current.replace_indeterminate("."))
+@functools.lru_cache
+def possible_placements(record: str, group_size: int, force=False) -> list[str]:
+    if group_size == 0:  # base case
+        if not record:
+            return [""]
+        if record[0] == "#":
+            return []
+        return ["." + record[1:]]
 
-        return guesses
+    if not record:  # no more string left, but there is group left, prune
+        return []
 
-    def is_coherent(self) -> bool:
-        actual_groups = tuple(
-            len(group) for group in re.split(r"\.+", self.record) if group
-        )
-        return actual_groups == self.groups
+    if record[0] == ".":
+        if force:  # we ran into a blank while trying to keep a group going, bail
+            return []
+        # keep looking until we see an interesting character
+        return [p for p in possible_placements(record.lstrip("."), group_size)]
 
-    def num_coherent(self) -> int:
-        return sum(guess.is_coherent() for guess in self.guesses())
+    if record[0] == "#":  # eat the #, group size is one smaller
+        return [p for p in possible_placements(record[1:], group_size - 1, force=True)]
+
+    # ????
+    _with = possible_placements(record[1:], group_size - 1, force=True)
+    if force:
+        return _with
+
+    _without = possible_placements("." + record[1:], group_size)
+    return list(set(_without + _with))
+
+
+@functools.lru_cache
+def count(record: str, groups: tuple[int, ...]):
+    if len(groups) == 0:
+        return "#" not in record
+
+    places = possible_placements(record, groups[0])
+    if not places:
+        return 0
+
+    groups = groups[1:]
+    return sum(count(place, groups) for place in places if is_viable(place, groups))
 
 
 def parse_input(raw: str) -> list[Spring]:
@@ -49,8 +71,14 @@ def parse_input(raw: str) -> list[Spring]:
 
 
 def part_1(raw: str) -> int:
-    return sum(spring.num_coherent() for spring in parse_input(raw))
+    return sum(count(spring.record, spring.groups) for spring in parse_input(raw))
+
+
+def part_2(raw: str) -> int:
+    springs = [spring.expand(5) for spring in parse_input(raw)]
+    return sum(count(spring.record, spring.groups) for spring in springs)
 
 
 if __name__ == "__main__":
     print(part_1(lib.get_input(12)))
+    print(part_2(lib.get_input(12)))
