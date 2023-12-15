@@ -90,9 +90,14 @@ class Point(typing.NamedTuple):
 Grid = dict[Point, str]
 
 
-def parse_grid(raw: str) -> Grid:
+def parse_grid(raw: str, rev_y: False) -> Grid:
     points = {}
-    for y, line in enumerate(raw.strip().splitlines()):
+
+    lines = raw.strip().splitlines()
+    if rev_y:
+        lines.reverse()
+
+    for y, line in enumerate(lines):
         for x, c in enumerate(line.strip()):
             points[Point(x, y)] = c
 
