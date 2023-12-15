@@ -12,5 +12,19 @@ def test_HASH(string: str, expected: int):
     assert HASH(string) == expected
 
 
+def test_parse_input():
+    i0 = Instruction("rn=1")
+    assert i0.string == "rn=1"
+    assert i0.label == "rn"
+    assert i0.operation == "="
+    assert i0.focal_length == 1
+
+    parse_input(EXAMPLE_1)
+
+
 def test_part_1():
     assert part_1(EXAMPLE_1) == 1320
+
+
+def test_part_2():
+    assert part_2(EXAMPLE_1) == 145
