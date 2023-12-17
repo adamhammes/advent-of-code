@@ -50,6 +50,9 @@ class Point(typing.NamedTuple):
     x: int
     y: int
 
+    def times(self, i: int) -> "Point":
+        return Point(self.x * i, self.y * i)
+
     def displace(self, dx, dy):
         return Point(self.x + dx, self.y + dy)
 
@@ -90,7 +93,7 @@ class Point(typing.NamedTuple):
 Grid = dict[Point, str]
 
 
-def parse_grid(raw: str, rev_y: False) -> Grid:
+def parse_grid(raw: str, rev_y=False) -> Grid:
     points = {}
 
     lines = raw.strip().splitlines()
