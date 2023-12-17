@@ -13,6 +13,12 @@ O.#..O.#.#
 #OO..#....
 """
 
+
+def test_print():
+    grid = parse_input(EXAMPLE_1)
+    print_grid(grid)
+
+
 EXAMPLE_1_TILTED_NORTH = """
 OOOO.#.O..
 OO..#....#
@@ -26,6 +32,38 @@ O..#.OO...
 #....#....
 """
 
+EXAMPLE_1_1_CYCLE = """
+.....#....
+....#...O#
+...OO##...
+.OO#......
+.....OOO#.
+.O#...O#.#
+....O#....
+......OOOO
+#...O###..
+#..OO#....
+"""
+
+EXAMPLE_1_2_CYCLE = """
+.....#....
+....#...O#
+.....##...
+..O#......
+.....OOO#.
+.O#...O#.#
+....O#...O
+.......OOO
+#..OO###..
+#.OOO#...O
+"""
+
+SIMPLE = """
+.xx
+...
+x.x
+"""
+
 
 def test_parse_input():
     grid = parse_input(EXAMPLE_1)
@@ -36,8 +74,7 @@ def test_parse_input():
 
 def test_tilt():
     grid = parse_input(EXAMPLE_1)
-    tilt(grid)
-
+    grid = tilt(grid)
     assert grid == parse_input(EXAMPLE_1_TILTED_NORTH)
 
 
@@ -47,3 +84,15 @@ def test_score():
 
 def test_part_1():
     assert part_1(EXAMPLE_1) == 136
+
+
+def test_part_2():
+    assert part_2(EXAMPLE_1) == 64
+
+
+def test_cycle():
+    start = parse_input(EXAMPLE_1)
+    cycled = cycle(start)
+
+    assert cycled == parse_input(EXAMPLE_1_1_CYCLE)
+    assert cycle(cycled) == parse_input(EXAMPLE_1_2_CYCLE)
