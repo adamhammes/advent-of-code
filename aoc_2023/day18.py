@@ -1,3 +1,4 @@
+import dataclasses
 import enum
 import re
 import typing
