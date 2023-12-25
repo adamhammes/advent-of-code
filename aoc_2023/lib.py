@@ -105,3 +105,9 @@ def parse_grid(raw: str, rev_y=False) -> Grid:
             points[Point(x, y)] = c
 
     return points
+
+
+class P3D(typing.NamedTuple):
+    x: int
+    y: int
+    z: int

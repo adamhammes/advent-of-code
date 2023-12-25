@@ -2,12 +2,7 @@ import itertools
 import typing
 
 import lib
-
-
-class P3D(typing.NamedTuple):
-    x: int
-    y: int
-    z: int
+from lib import P3D
 
 
 class HailStone(typing.NamedTuple):
