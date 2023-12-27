@@ -1,6 +1,6 @@
 from day19 import *
 
-EXAMPLE_1 = """
+FULL_EXAMPLE = """
 px{a<2006:qkq,m>2090:A,rfg}
 pv{a>1716:R,A}
 lnx{m>1548:A,A}
@@ -20,21 +20,51 @@ hdj{m>838:A,pv}
 {x=2127,m=1623,a=2188,s=1013}
 """
 
+EXAMPLE_1 = """
+lxb{x>2186:R,A}
+"""
 
-def test_parse_input():
-    rule_map, parts = parse_input(EXAMPLE_1)
 
-    assert len(rule_map) == 11
-    """px{a<2006:qkq,m>2090:A,rfg}"""
-    assert rule_map["px"] == WorkFlow(
-        label="px",
-        rules=[
-            Rule(category="a", benchmark=2006, op=operator.lt, result=Goto("qkq")),
-            Rule(category="m", benchmark=2090, op=operator.gt, result=Approve()),
-        ],
-        fallback=Goto("rfg"),
+def test_split():
+    rule = Rule("x", 2186, ">", Reject())
+    accepted, rejected = rule.apply(Domain.new())
+    print("asdf")
+
+
+def test_the_thing():
+    w = parse_rule_set(EXAMPLE_1)
+    assert w == WorkFlow("lxb", [Rule("x", 2186, ">", Reject())], Approve())
+
+    rule_map = {"lxb": w}
+
+    d = process(rule_map, Domain.new(), "lxb")[0]
+    assert d == Domain(
+        {
+            "x": Range(1, 2186),
+            "m": Range(1, 4000),
+            "a": Range(1, 4000),
+            "s": Range(1, 4000),
+        }
     )
 
+    assert d.size() == 4000 * 4000 * 4000 * 2186
 
-def test_part_1():
-    assert part_1(EXAMPLE_1) == 19114
+    print("here")
+
+
+def test_the_thing_2():
+    w = parse_rule_set("lxb{x>2186:A,a>1000:A,R}")
+    rule_map = {"lxb": w}
+
+    ds = process(rule_map, Domain.new(), "lxb")
+
+    d1 = 4000 * 4000 * 4000 * (4000 - 2186)
+    d2 = 4000 * 4000 * (4000 - 1000) * 2186
+    total = sum(map(Domain.size, ds))
+    assert total == d1 + d2
+
+    print("here")
+
+
+def test_part_2():
+    assert part_2(FULL_EXAMPLE) == 167409079868000
