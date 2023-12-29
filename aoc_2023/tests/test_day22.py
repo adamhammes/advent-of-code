@@ -13,27 +13,24 @@ EXAMPLE_1 = """
 
 def test_parse_cube():
     cubes = parse_input(EXAMPLE_1)
-
     assert cubes[0].points == {P3D(1, 0, 1), P3D(1, 1, 1), P3D(1, 2, 1)}
-    assert cubes[0].above == {P3D(1, 0, 2), P3D(1, 1, 2), P3D(1, 2, 2)}
 
 
-def test_supports():
-    cubes = parse_input(EXAMPLE_1)
-    cubes = settle(cubes)
-    a, b, c, d, e, f, g = cubes
+def test_settle():
+    cubes = settle(parse_input(EXAMPLE_1))
 
-    assert a.supports(b)
-    assert a.supports(c)
+    start = set(cubes)
 
+    not_start = [*cubes[:2], *cubes[3:]]
+    settled = settle(not_start)
 
-def test_do_something():
-    cubes = parse_input(EXAMPLE_1)
-    cubes = settle(cubes)
-    a, b, c, d, e, f, g = cubes
-
-    assert do_the_thing(cubes) == [b, c, d, e, g]
+    for c in settled:
+        assert c in start
 
 
 def test_part_1():
     assert part_1(EXAMPLE_1) == 5
+
+
+def test_part_2():
+    assert part_2(EXAMPLE_1) == 7

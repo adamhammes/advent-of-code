@@ -1,6 +1,5 @@
 import dataclasses
 import functools
-import itertools
 
 import lib
 from lib import P3D
@@ -13,17 +12,9 @@ class Cube:
     def min_z(self) -> int:
         return min(p.z for p in self.points)
 
+    @functools.cached_property
     def down(self) -> "Cube":
         return Cube(frozenset(P3D(p.x, p.y, p.z - 1) for p in self.points))
-
-    @functools.cached_property
-    def above(self) -> set[P3D]:
-        max_z = max(p.z for p in self.points)
-        top_layer = (p for p in self.points if p.z == max_z)
-        return set(P3D(p.x, p.y, p.z + 1) for p in top_layer)
-
-    def supports(self, other: "Cube") -> bool:
-        return any(p in other.points for p in self.above)
 
 
 def _parse_cube(line: str) -> Cube:
@@ -38,53 +29,53 @@ def _parse_cube(line: str) -> Cube:
     return Cube(frozenset(points))
 
 
-def parse_input(raw: str) -> list[Cube]:
-    return list(map(_parse_cube, raw.strip().splitlines()))
-
-
-def settle(cubes: list[Cube]) -> list[Cube]:
+def settle(cubes: list[Cube]) -> tuple[list[Cube], int]:
     cubes.sort(key=Cube.min_z)
 
     settled_points = set()
     settled_cubes = []
+    num_changed = 0
     for cube in cubes:
-        while cube.min_z() > 1 and all(
-            p not in settled_points for p in cube.down().points
-        ):
-            cube = cube.down()
+        was_moved = False
+        while cube.min_z() > 1 and not cube.down.points.intersection(settled_points):
+            cube = cube.down
+            was_moved = True
 
+        num_changed += was_moved
         settled_points.update(cube.points)
         settled_cubes.append(cube)
 
-    return settled_cubes
+    return settled_cubes, num_changed
 
 
-def do_the_thing(cubes: list[Cube]) -> list[Cube]:
-    supports = {c: set() for c in cubes}
-    supported_by = {c: set() for c in cubes}
+def calc_num_dependencies(cubes: list[Cube]) -> dict[Cube, int]:
+    cubes, _ = settle(cubes)
 
-    for c1, c2 in itertools.permutations(cubes, 2):
-        if c1.supports(c2):
-            supports[c1].add(c2)
-            supported_by[c2].add(c1)
-
-    interesting = []
+    dependencies = {}
     for cube in cubes:
-        supported_cubes = supports[cube]
+        other_cubes = set(cubes) - {cube}
+        _, num_changed = settle(list(other_cubes))
+        dependencies[cube] = num_changed
 
-        if not supported_cubes or all(
-            len(supported_by[c]) > 1 for c in supported_cubes
-        ):
-            interesting.append(cube)
+    return dependencies
 
-    return interesting
+
+def parse_input(raw: str) -> list[Cube]:
+    return list(map(_parse_cube, raw.strip().splitlines()))
 
 
 def part_1(raw: str) -> int:
     cubes = parse_input(raw)
-    cubes = settle(cubes)
-    return len(do_the_thing(cubes))
+    dependencies = calc_num_dependencies(cubes)
+    return sum(not num_dependent for num_dependent in dependencies.values())
+
+
+def part_2(raw: str) -> int:
+    cubes = parse_input(raw)
+    dependencies = calc_num_dependencies(cubes)
+    return sum(dependencies.values())
 
 
 if __name__ == "__main__":
     print(part_1(lib.get_input(22)))
+    print(part_2(lib.get_input(22)))
