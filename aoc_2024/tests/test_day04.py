@@ -1,0 +1,22 @@
+from day04 import *
+
+EXAMPLE_1 = """
+MMMSXXMASM
+MSAMXMSMSA
+AMXSXMAAMM
+MSAMASMSMX
+XMASAMXAMM
+XXAMMXXAMA
+SMSMSASXSS
+SAXAMASAAA
+MAMMMXMMMM
+MXMXAXMASX
+"""
+
+
+def test_part_1():
+    assert part_1(EXAMPLE_1) == 18
+
+
+def test_part_2():
+    assert part_2(EXAMPLE_1) == 9

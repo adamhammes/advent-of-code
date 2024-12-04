@@ -1,4 +1,5 @@
 import re
+import typing
 
 
 def get_input(day: int) -> str:
@@ -8,3 +9,42 @@ def get_input(day: int) -> str:
 
 def extract_ints(string: str) -> list[int]:
     return list(map(int, re.findall(r"-?\d+", string)))
+
+
+class Point(typing.NamedTuple):
+    x: int
+    y: int
+
+    def times(self, i: int) -> "Point":
+        return Point(self.x * i, self.y * i)
+
+    def displace(self, dx, dy):
+        return Point(self.x + dx, self.y + dy)
+
+    # fmt: off
+    directions8 = [
+        [-1,  1], [0,  1], [1,  1],
+        [-1,  0],          [1,  0],
+        [-1, -1], [0, -1], [1, -1],
+    ]
+    # fmt: on
+
+    def neighbors8(self) -> typing.List["Point"]:
+        return [self.displace(x, y) for x, y in self.directions8]
+
+
+Grid = dict[Point, str]
+
+
+def parse_grid(raw: str, rev_y=False) -> Grid:
+    points = {}
+
+    lines = raw.strip().splitlines()
+    if rev_y:
+        lines.reverse()
+
+    for y, line in enumerate(lines):
+        for x, c in enumerate(line.strip()):
+            points[Point(x, y)] = c
+
+    return points
