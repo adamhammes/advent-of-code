@@ -1,6 +1,8 @@
 import re
 import typing
 
+T = typing.TypeVar("T")
+
 
 def get_input(day: int) -> str:
     with open(f"inputs/day{day:02}.txt") as f:
@@ -9,6 +11,13 @@ def get_input(day: int) -> str:
 
 def extract_ints(string: str) -> list[int]:
     return list(map(int, re.findall(r"-?\d+", string)))
+
+
+def first(
+    iterable: typing.Iterable[T],
+    condition: typing.Optional[typing.Callable[[T], bool]] = None,
+) -> T:
+    return next(item for item in iterable if condition is None or condition(item))
 
 
 class Point(typing.NamedTuple):
