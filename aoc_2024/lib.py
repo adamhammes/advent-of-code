@@ -26,7 +26,7 @@ class Point(typing.NamedTuple):
 
     def times(self, i: int) -> "Point":
         return Point(self.x * i, self.y * i)
-    
+
     def displace(self, dx, dy):
         return Point(self.x + dx, self.y + dy)
 
