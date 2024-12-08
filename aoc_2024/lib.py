@@ -30,6 +30,9 @@ class Point(typing.NamedTuple):
     def displace(self, dx, dy):
         return Point(self.x + dx, self.y + dy)
 
+    def delta_to(self, o: "Point") -> "Point":
+        return Point(o.x - self.x, o.y - self.y)
+
     # fmt: off
     directions8 = [
         [-1,  1], [0,  1], [1,  1],
