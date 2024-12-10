@@ -33,6 +33,21 @@ class Point(typing.NamedTuple):
     def delta_to(self, o: "Point") -> "Point":
         return Point(o.x - self.x, o.y - self.y)
 
+    def north(self) -> "Point":
+        return self.displace(0, 1)
+
+    def east(self) -> "Point":
+        return self.displace(1, 0)
+
+    def south(self):
+        return self.displace(0, -1)
+
+    def west(self):
+        return self.displace(-1, 0)
+
+    def neighbors4(self) -> list["Point"]:
+        return [self.north(), self.east(), self.south(), self.west()]
+
     # fmt: off
     directions8 = [
         [-1,  1], [0,  1], [1,  1],
