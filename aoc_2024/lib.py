@@ -75,3 +75,10 @@ def parse_grid(raw: str, rev_y=False) -> Grid:
             points[Point(x, y)] = c
 
     return points
+
+
+def product(nums: typing.Iterable[int]) -> int:
+    p = 1
+    for n in nums:
+        p *= n
+    return p
