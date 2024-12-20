@@ -24,6 +24,9 @@ class Point(typing.NamedTuple):
     x: int
     y: int
 
+    def cartesian_distance_to(self, o: "Point") -> int:
+        return abs(o.x - self.x) + abs(o.y - self.y)
+
     def times(self, i: int) -> "Point":
         return Point(self.x * i, self.y * i)
 
